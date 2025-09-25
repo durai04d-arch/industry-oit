@@ -6,13 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Navigation from "@/components/Navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Loading from "./pages/Loading";
 import Dashboard from "./pages/Dashboard";
-import Services from "./pages/Services";
-import Technology from "./pages/Technology";
-import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
@@ -29,35 +25,12 @@ const App = () => (
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/loading" element={<Loading />} />
-              <Route path="/" element={
-                <>
-                  <Navigation />
-                  <Index />
-                </>
-              } />
+              <Route path="/" element={<Login />} />
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Navigation />
                   <Dashboard />
                 </ProtectedRoute>
-              } />
-              <Route path="/services" element={
-                <>
-                  <Navigation />
-                  <Services />
-                </>
-              } />
-              <Route path="/technology" element={
-                <>
-                  <Navigation />
-                  <Technology />
-                </>
-              } />
-              <Route path="/about" element={
-                <>
-                  <Navigation />
-                  <About />
-                </>
               } />
               <Route path="/contact" element={
                 <>
