@@ -8,52 +8,53 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 220 30% 5%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 100%;
+    --foreground: 220 100% 15%;
 
-    --card: 220 40% 8%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 100% 15%;
 
-    --popover: 220 40% 8%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 100% 15%;
 
-    --primary: 220 90% 30%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 220 100% 25%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 30% 15%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 220 60% 95%;
+    --secondary-foreground: 220 100% 15%;
 
-    --muted: 220 30% 15%;
-    --muted-foreground: 220 10% 70%;
+    --muted: 220 20% 95%;
+    --muted-foreground: 220 50% 50%;
 
-    --accent: 220 90% 35%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 220 100% 30%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 85% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 30% 20%;
-    --input: 220 30% 20%;
-    --ring: 220 90% 30%;
+    --border: 220 30% 85%;
+    --input: 220 30% 90%;
+    --ring: 220 100% 25%;
 
     --radius: 0.75rem;
 
     /* Navy Blue & White Design System */
-    --primary-glow: 220 90% 40%;
-    --navy-light: 220 60% 25%;
-    --navy-accent: 220 90% 50%;
+    --primary-glow: 220 100% 35%;
+    --navy-light: 220 80% 30%;
+    --navy-accent: 220 100% 40%;
+    --navy-dark: 220 100% 20%;
     --warning-orange: 25 95% 60%;
     
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-dark: linear-gradient(180deg, hsl(var(--background)), hsl(220 30% 2%));
+    --gradient-light: linear-gradient(180deg, hsl(var(--background)), hsl(220 20% 98%));
     --gradient-navy: linear-gradient(135deg, hsl(var(--navy-light)), hsl(var(--primary)));
     --gradient-alert: linear-gradient(135deg, hsl(var(--destructive)), hsl(var(--warning-orange)));
     
     /* Shadows */
-    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.4);
-    --shadow-navy: 0 10px 40px -10px hsl(var(--primary) / 0.5);
-    --shadow-card: 0 4px 20px -4px hsl(220 30% 0% / 0.8);
+    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.3);
+    --shadow-navy: 0 10px 40px -10px hsl(var(--primary) / 0.4);
+    --shadow-card: 0 4px 20px -4px hsl(var(--primary) / 0.1);
     --shadow-alert: 0 20px 60px -10px hsl(var(--destructive) / 0.6);
     
     /* Animations */

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, Thermometer, Wind, Droplets, Radio } from 'lucide-react';
 import AlertModal from '@/components/AlertModal';
+import SensorDetailModal from '@/components/SensorDetailModal';
 
 interface SensorInsights {
   status: 'normal' | 'warning' | 'critical' | 'optimal' | 'info' | 'safe' | 'clear';
@@ -161,6 +162,7 @@ const IndustrySpecificSensorCard: React.FC<IndustrySpecificSensorCardProps> = ({
   industry 
 }) => {
   const [showAlert, setShowAlert] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const insights = getIntelligentInsights(name, value, unit, industry);
   const statusVariant = getStatusVariant(insights.status);
 
@@ -170,21 +172,26 @@ const IndustrySpecificSensorCard: React.FC<IndustrySpecificSensorCardProps> = ({
     }
   };
 
+  const handleCardHover = () => {
+    setShowDetailModal(true);
+  };
+
   return (
     <>
       <Card 
-        className={`bg-card border-border transition-all duration-300 transform hover:scale-105 hover:shadow-navy animate-fade-in cursor-pointer ${
+        className={`bg-card border-border transition-all duration-500 transform hover:scale-105 hover:shadow-navy animate-fade-in cursor-pointer ${
           insights.status === 'critical' 
-            ? 'ring-2 ring-destructive animate-pulse-glow bg-gradient-to-br from-destructive/10 to-navy-warning/10' 
+            ? 'ring-2 ring-destructive animate-pulse-glow bg-gradient-to-br from-destructive/10 to-destructive/5' 
             : insights.alertLevel === 'high'
-            ? 'border-navy-warning/50 hover:bg-gradient-to-br hover:from-navy-warning/5 hover:to-primary/5'
+            ? 'border-primary/30 hover:bg-gradient-to-br hover:from-primary/5 hover:to-primary/10'
             : 'hover:bg-gradient-to-br hover:from-primary/5 hover:to-navy-light/5'
         }`}
-        onClick={handleAlertClick}
+        onClick={insights.alertLevel !== 'low' ? handleAlertClick : undefined}
+        onMouseEnter={handleCardHover}
       >
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold text-muted-foreground flex items-center gap-2 animate-scale-in">
-            <div className="animate-float">
+          <CardTitle className="text-sm font-semibold text-foreground flex items-center gap-2 animate-scale-in">
+            <div className="text-primary">
               {getIconComponent(type)}
             </div>
             {name}
@@ -192,7 +199,7 @@ const IndustrySpecificSensorCard: React.FC<IndustrySpecificSensorCardProps> = ({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-center animate-scale-in">
-            <div className="text-3xl font-bold bg-gradient-to-r from-primary to-navy-accent bg-clip-text text-transparent">
+            <div className="text-3xl font-bold text-primary">
               {value.toFixed(1)}
             </div>
             <div className="text-sm text-muted-foreground">
@@ -245,6 +252,16 @@ const IndustrySpecificSensorCard: React.FC<IndustrySpecificSensorCardProps> = ({
         sensorName={name}
         sensorValue={value}
         unit={unit}
+      />
+
+      <SensorDetailModal
+        isOpen={showDetailModal}
+        onClose={() => setShowDetailModal(false)}
+        sensorName={name}
+        sensorType={type}
+        currentValue={value}
+        unit={unit}
+        location={location}
       />
     </>
   );
