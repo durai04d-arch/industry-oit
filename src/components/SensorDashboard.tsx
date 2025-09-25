@@ -22,9 +22,9 @@ interface SensorConfig {
 
 const sensorConfigs: SensorConfig[] = [
   { type: 'temperature', name: 'TEMPERATURE', alertThreshold: 30.0, icon: '🌡️' },
-  { type: 'methane', name: 'GAS LEVEL', alertThreshold: 1000, icon: '💨' },
+  { type: 'gas', name: 'GAS LEVEL', alertThreshold: 1000, icon: '💨' },
   { type: 'humidity', name: 'HUMIDITY', alertThreshold: 80, icon: '💧' },
-  { type: 'ultrasonic', name: 'PROXIMITY', alertThreshold: 10, icon: '📡' },
+  { type: 'distance', name: 'PROXIMITY', alertThreshold: 10, icon: '📡' },
 ];
 
 
