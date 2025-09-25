@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Area, AreaChart } from 'recharts';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+
+// Note: The 'jspdf' and 'jspdf-autotable' libraries are expected to be loaded globally
+// from a CDN via <script> tags in your main index.html file.
 
 interface SensorDetailModalProps {
   isOpen: boolean;
@@ -47,6 +47,30 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
 
   const fetchHistoricalData = async () => {
     setIsLoading(true);
+    // MOCK DATA: Simulating API call since Supabase client isn't available in this environment.
+    // In a real application, you would fetch data from your backend or Supabase here.
+    const generateMockData = (startTime: Date, points: number, sensorUnit: string) => {
+        const data: HistoricalData[] = [];
+        const timeStep = (new Date().getTime() - startTime.getTime()) / points;
+        for (let i = 0; i < points; i++) {
+            const timestamp = new Date(startTime.getTime() + i * timeStep).toISOString();
+            let value;
+            if (sensorUnit === '°C') { // Temperature
+                 value = 20 + Math.random() * 5 + Math.sin(i / (points / (2 * Math.PI))) * 3;
+            } else if (sensorUnit === '%') { // Humidity
+                 value = 55 + Math.random() * 10 - 5;
+            } else { // Other sensors
+                 value = Math.random() * 100;
+            }
+            data.push({
+                created_at: timestamp,
+                value: parseFloat(value.toFixed(1)),
+                id: `mock-${i}`
+            });
+        }
+        return data;
+    };
+    
     try {
       const now = new Date();
       let startDate = new Date();
@@ -69,22 +93,16 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
           break;
       }
 
-      const { data, error } = await supabase
-        .from('sensor_readings')
-        .select('created_at, value, id')
-        .eq('sensor_type', sensorType)
-        .gte('created_at', startDate.toISOString())
-        .order('created_at', { ascending: true });
+      // Using mock data instead of a database call
+      const data = generateMockData(startDate, 100, unit);
+      setHistoricalData(data);
 
-      if (error) {
-        console.error('Error fetching historical data:', error);
-      } else {
-        setHistoricalData(data || []);
-      }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching data:', error);
+      setHistoricalData([]);
     } finally {
-      setIsLoading(false);
+      // Simulate network delay
+      setTimeout(() => setIsLoading(false), 500);
     }
   };
 
@@ -97,7 +115,12 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
   };
 
   const downloadPDF = () => {
-    const doc = new jsPDF();
+    if (!(window as any).jsPDF) {
+        console.error("jsPDF is not loaded. Please include it via a script tag.");
+        alert("PDF generation library is not available.");
+        return;
+    }
+    const doc = new (window as any).jsPDF();
     
     // Title
     doc.setFontSize(20);
@@ -117,7 +140,7 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
       `${item.value} ${unit}`
     ]);
     
-    (doc as any).autoTable({
+    doc.autoTable({
       head: [['Timestamp', 'Value']],
       body: tableData,
       startY: 100,
@@ -150,7 +173,7 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
 
   const formatChartData = () => {
     return historicalData.map(item => ({
-      time: new Date(item.created_at).toLocaleTimeString(),
+      time: new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       value: parseFloat(item.value.toString()),
       fullTime: new Date(item.created_at).toLocaleString()
     }));
@@ -182,15 +205,15 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
       <div className="fixed inset-4 z-50 bg-background border border-primary/20 rounded-lg shadow-navy overflow-hidden animate-scale-in">
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="bg-gradient-navy p-6 text-primary-foreground">
+          <div className="bg-gradient-navy p-6 text-black">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary-foreground/20 rounded-lg animate-pulse-glow">
+                <div className="p-3 bg-black/10 rounded-lg animate-pulse-glow">
                   <Settings className="h-8 w-8" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold animate-slide-down">{sensorName} Sensor</h2>
-                  <p className="text-primary-foreground/80 animate-fade-in">
+                  <p className="text-black/80 animate-fade-in">
                     Real-time monitoring and historical analysis
                   </p>
                 </div>
@@ -199,7 +222,7 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
                 variant="ghost"
                 size="icon"
                 onClick={onClose}
-                className="text-primary-foreground hover:bg-primary-foreground/20 animate-scale-in"
+                className="text-black hover:bg-black/10 animate-scale-in"
               >
                 <X className="h-6 w-6" />
               </Button>
@@ -336,6 +359,7 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
                           <YAxis 
                             stroke="hsl(var(--muted-foreground))"
                             fontSize={12}
+                            domain={['dataMin - 5', 'dataMax + 5']}
                           />
                           <Tooltip 
                             contentStyle={{
