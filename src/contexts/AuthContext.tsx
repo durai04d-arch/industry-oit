@@ -49,36 +49,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
       
-      // Check if RFID card exists and is active
-      const { data: cardData, error: cardError } = await supabase
-        .from('rfid_cards')
-        .select('*')
-        .eq('card_uid', cardUid)
-        .eq('is_active', true)
-        .single();
+      // Simple ID-based authentication for testing
+      const testUsers: { [key: string]: { name: string; industry?: string } } = {
+        '1234567890': { name: 'John Doe', industry: 'Agriculture' },
+        '0987654321': { name: 'Jane Smith', industry: 'Mechanical' },
+        '1122334455': { name: 'Admin User', industry: 'Electronics' },
+        '1111111111': { name: 'Test User 1', industry: 'Agriculture' },
+        '2222222222': { name: 'Test User 2', industry: 'Mechanical' },
+        '3333333333': { name: 'Test User 3', industry: 'Electronics' }
+      };
 
-      if (cardError || !cardData) {
-        return { success: false, message: 'Access Denied - Invalid Card' };
+      const testUser = testUsers[cardUid];
+      
+      if (!testUser) {
+        return { success: false, message: 'Invalid ID - Please use a valid test ID number' };
       }
 
-      // Check for recent sensor data (last 5 minutes) with matching card_uid
-      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
-      const { data: sensorData, error: sensorError } = await supabase
-        .from('sensor_data')
-        .select('*')
-        .eq('card_uid', cardUid)
-        .gte('created_at', fiveMinutesAgo)
-        .order('created_at', { ascending: false })
-        .limit(1);
-
-      if (sensorError || !sensorData || sensorData.length === 0) {
-        return { 
-          success: false, 
-          message: 'Access Denied - No recent sensor activity detected. Please scan your card at the sensor station first.' 
-        };
-      }
-
-      // Check if user profile exists
+      // Check if user profile exists in database
       const { data: profileData, error: profileError } = await supabase
         .from('user_profiles')
         .select('*')
@@ -94,16 +81,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         localStorage.setItem('temp_card_uid', cardUid);
         return { 
           success: true, 
-          message: `Welcome ${cardData.user_name}! Please complete your profile setup.`,
+          message: `Welcome ${testUser.name}! Please complete your profile setup.`,
           needsSetup: true 
         };
       }
 
       const userData: User = {
-        id: cardData.id,
-        card_uid: cardData.card_uid,
-        user_name: cardData.user_name,
-        industry: profileData.industry,
+        id: cardUid,
+        card_uid: cardUid,
+        user_name: testUser.name,
+        industry: profileData.industry || testUser.industry,
         email: profileData.email,
         phone: profileData.phone,
         company_name: profileData.company_name
@@ -112,7 +99,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(userData);
       localStorage.setItem('rfid_user', JSON.stringify(userData));
       
-      return { success: true, message: `Access Granted - Welcome back ${cardData.user_name}` };
+      return { success: true, message: `Access Granted - Welcome back ${testUser.name}` };
     } catch (error) {
       console.error('Login error:', error);
       return { success: false, message: 'System Error - Please Try Again' };
