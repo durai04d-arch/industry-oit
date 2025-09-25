@@ -31,226 +31,91 @@ const getIntelligentInsights = (name: string, value: number, unit: string, indus
   switch (name.toLowerCase()) {
     case 'temperature':
       if (unit === '°C') {
-        if (industry === 'Agriculture') {
-          if (value < 5) {
-            insights.status = 'critical';
-            insights.message = 'Crop damage risk - freezing temperature';
-            insights.recommendation = 'Activate frost protection systems, cover sensitive crops';
-            insights.alertLevel = 'error';
-          } else if (value < 10) {
-            insights.status = 'warning';
-            insights.message = 'Cold stress on crops possible';
-            insights.recommendation = 'Monitor crop health, consider greenhouse heating';
-            insights.alertLevel = 'warning';
-          } else if (value > 35) {
-            insights.status = 'critical';
-            insights.message = 'Heat stress on crops - wilting risk';
-            insights.recommendation = 'Increase irrigation, provide shade, activate cooling';
-            insights.alertLevel = 'error';
-          } else if (value > 30) {
-            insights.status = 'warning';
-            insights.message = 'High temperature - monitor crop stress';
-            insights.recommendation = 'Ensure adequate water supply';
-            insights.alertLevel = 'warning';
-          } else {
-            insights.status = 'optimal';
-            insights.message = 'Ideal temperature for crop growth';
-            insights.recommendation = 'Maintain current conditions';
-          }
-        } else if (industry === 'Mechanical') {
-          if (value < 0) {
-            insights.status = 'critical';
-            insights.message = 'Machinery freeze risk - lubricants solidifying';
-            insights.recommendation = 'Preheat equipment, check hydraulic systems';
-            insights.alertLevel = 'error';
-          } else if (value > 70) {
-            insights.status = 'critical';
-            insights.message = 'Machinery overheating - component failure risk';
-            insights.recommendation = 'Shutdown equipment, check cooling systems';
-            insights.alertLevel = 'error';
-          } else if (value > 50) {
-            insights.status = 'warning';
-            insights.message = 'High operating temperature detected';
-            insights.recommendation = 'Check ventilation and coolant levels';
-            insights.alertLevel = 'warning';
-          } else {
-            insights.status = 'optimal';
-            insights.message = 'Machinery operating temperature normal';
-            insights.recommendation = 'Continue regular maintenance schedule';
-          }
-        } else if (industry === 'Electronics') {
-          if (value < 10) {
-            insights.status = 'warning';
-            insights.message = 'Low temperature - condensation risk on circuits';
-            insights.recommendation = 'Allow gradual warming, check for moisture';
-            insights.alertLevel = 'warning';
-          } else if (value > 25) {
-            insights.status = 'warning';
-            insights.message = 'Elevated temperature - component degradation risk';
-            insights.recommendation = 'Improve cooling, check thermal management';
-            insights.alertLevel = 'warning';
-          } else {
-            insights.status = 'optimal';
-            insights.message = 'Optimal operating temperature for electronics';
-            insights.recommendation = 'Maintain stable thermal environment';
-          }
+        // Normal range: 20-30°C, with industry-specific adjustments
+        if (value < 10 || value > 40) {
+          insights.status = 'critical';
+          insights.message = value < 10 ? 'CRITICAL: Temperature too low' : 'CRITICAL: Temperature too high';
+          insights.recommendation = value < 10 ? 'Check heating systems, risk of equipment damage' : 'Check cooling systems, equipment overheating risk';
+          insights.alertLevel = 'error';
+        } else if (value < 15 || value > 35) {
+          insights.status = 'warning';
+          insights.message = value < 15 ? 'Low temperature detected' : 'High temperature detected';
+          insights.recommendation = value < 15 ? 'Monitor heating systems' : 'Monitor cooling systems';
+          insights.alertLevel = 'warning';
+        } else {
+          insights.status = 'optimal';
+          insights.message = 'Temperature within normal range (15-35°C)';
+          insights.recommendation = 'Maintain current conditions';
         }
       }
       break;
 
     case 'humidity':
       if (unit === '%') {
-        if (industry === 'Agriculture') {
-          if (value > 90) {
-            insights.status = 'critical';
-            insights.message = 'Disease risk - fungal infections likely';
-            insights.recommendation = 'Improve ventilation, apply fungicides if needed';
-            insights.alertLevel = 'error';
-          } else if (value < 40) {
-            insights.status = 'warning';
-            insights.message = 'Low humidity - plant water stress';
-            insights.recommendation = 'Increase irrigation, consider misting systems';
-            insights.alertLevel = 'warning';
-          } else {
-            insights.status = 'optimal';
-            insights.message = 'Humidity ideal for plant health';
-            insights.recommendation = 'Maintain current moisture levels';
-          }
-        } else if (industry === 'Electronics') {
-          if (value > 60) {
-            insights.status = 'critical';
-            insights.message = 'Corrosion risk - high humidity damage to circuits';
-            insights.recommendation = 'Install dehumidifiers, seal enclosures';
-            insights.alertLevel = 'error';
-          } else if (value < 20) {
-            insights.status = 'warning';
-            insights.message = 'Static electricity risk - ESD damage possible';
-            insights.recommendation = 'Use anti-static measures, controlled humidification';
-            insights.alertLevel = 'warning';
-          } else {
-            insights.status = 'optimal';
-            insights.message = 'Humidity within safe range for electronics';
-            insights.recommendation = 'Continue monitoring';
-          }
+        // Normal range: 40-70%, alert outside this range
+        if (value < 30 || value > 80) {
+          insights.status = 'critical';
+          insights.message = value < 30 ? 'CRITICAL: Humidity too low' : 'CRITICAL: Humidity too high';
+          insights.recommendation = value < 30 ? 'Risk of static electricity, increase humidity' : 'Condensation risk, improve ventilation';
+          insights.alertLevel = 'error';
+        } else if (value < 40 || value > 70) {
+          insights.status = 'warning';
+          insights.message = value < 40 ? 'Low humidity detected' : 'High humidity detected';
+          insights.recommendation = value < 40 ? 'Monitor humidity levels' : 'Check ventilation systems';
+          insights.alertLevel = 'warning';
         } else {
-          if (value > 80) {
-            insights.status = 'warning';
-            insights.message = 'High humidity - condensation risk';
-            insights.recommendation = 'Improve ventilation or use dehumidifier';
-            insights.alertLevel = 'warning';
-          } else if (value < 30) {
-            insights.status = 'warning';
-            insights.message = 'Low humidity - static electricity risk';
-            insights.recommendation = 'Consider humidification';
-            insights.alertLevel = 'warning';
-          } else {
-            insights.status = 'optimal';
-            insights.message = 'Humidity within optimal range';
-            insights.recommendation = 'Maintain current conditions';
-          }
+          insights.status = 'optimal';
+          insights.message = 'Humidity within optimal range (40-70%)';
+          insights.recommendation = 'Maintain current conditions';
         }
       }
       break;
 
     case 'gas':
     case 'gas level':
-      if (industry === 'Agriculture') {
-        if (value > 400) {
+      // Normal range: 700-2500, alert outside this range
+      if (value < 700 || value > 2500) {
+        if (value > 2500) {
           insights.status = 'critical';
-          insights.message = 'TOXIC GAS ALERT - Methane/Ammonia buildup in storage';
-          insights.recommendation = 'EVACUATE - Ventilate area, check grain storage';
+          insights.message = 'CRITICAL GAS ALERT - Dangerous levels detected';
+          insights.recommendation = 'EVACUATE AREA - Check for gas leaks immediately';
           insights.alertLevel = 'error';
-        } else if (value > 200) {
+        } else if (value < 700) {
           insights.status = 'warning';
-          insights.message = 'Gas buildup detected - fermentation/decay possible';
-          insights.recommendation = 'Improve ventilation, check stored materials';
+          insights.message = 'Low gas levels detected - potential sensor issue';
+          insights.recommendation = 'Check sensor calibration and connections';
           insights.alertLevel = 'warning';
-        } else {
-          insights.status = 'safe';
-          insights.message = 'Air quality safe for agricultural operations';
-          insights.recommendation = 'Continue regular monitoring';
-        }
-      } else if (industry === 'Mechanical') {
-        if (value > 500) {
-          insights.status = 'critical';
-          insights.message = 'EXPLOSION RISK - Flammable gas detected';
-          insights.recommendation = 'EMERGENCY SHUTDOWN - Check for fuel leaks';
-          insights.alertLevel = 'error';
-        } else if (value > 250) {
-          insights.status = 'warning';
-          insights.message = 'Potential gas leak - investigate immediately';
-          insights.recommendation = 'Check fuel lines, improve ventilation';
-          insights.alertLevel = 'warning';
-        } else {
-          insights.status = 'safe';
-          insights.message = 'Gas levels safe for mechanical operations';
-          insights.recommendation = 'Continue monitoring';
         }
       } else {
-        if (value > 500) {
-          insights.status = 'critical';
-          insights.message = 'FIRE HAZARD - Dangerous gas levels detected';
-          insights.recommendation = 'EVACUATE AREA IMMEDIATELY - Check for gas leaks';
-          insights.alertLevel = 'error';
-        } else if (value > 300) {
-          insights.status = 'warning';
-          insights.message = 'Elevated gas levels - potential hazard';
-          insights.recommendation = 'Investigate source and improve ventilation';
-          insights.alertLevel = 'warning';
-        } else {
-          insights.status = 'safe';
-          insights.message = 'Gas levels within safe range';
-          insights.recommendation = 'Continue regular monitoring';
-        }
+        insights.status = 'safe';
+        insights.message = 'Gas levels within normal range (700-2500)';
+        insights.recommendation = 'Continue regular monitoring';
       }
       break;
 
     case 'proximity':
     case 'distance':
       if (unit === 'cm') {
-        if (industry === 'Agriculture') {
-          if (value < 20) {
-            insights.status = 'info';
-            insights.message = 'Animal/equipment detected near sensor';
-            insights.recommendation = 'Check livestock or machinery position';
-            insights.alertLevel = 'info';
-          } else {
-            insights.status = 'clear';
-            insights.message = 'Field area clear';
-            insights.recommendation = 'Normal agricultural monitoring';
-          }
-        } else if (industry === 'Mechanical') {
-          if (value < 10) {
-            insights.status = 'critical';
-            insights.message = 'COLLISION RISK - Object too close to machinery';
-            insights.recommendation = 'STOP OPERATION - Clear obstruction immediately';
-            insights.alertLevel = 'error';
-          } else if (value < 30) {
-            insights.status = 'warning';
-            insights.message = 'Safety zone breach - object approaching';
-            insights.recommendation = 'Reduce speed, prepare for emergency stop';
-            insights.alertLevel = 'warning';
-          } else {
-            insights.status = 'clear';
-            insights.message = 'Machinery safety zone clear';
-            insights.recommendation = 'Normal operation';
-          }
+        // Normal range: 50-400cm, alert when objects too close
+        if (value < 10) {
+          insights.status = 'critical';
+          insights.message = 'CRITICAL: Object very close - collision risk';
+          insights.recommendation = 'IMMEDIATE ACTION - Clear obstruction';
+          insights.alertLevel = 'error';
+        } else if (value < 30) {
+          insights.status = 'warning';
+          insights.message = 'Object detected close - safety concern';
+          insights.recommendation = 'Monitor area, check for obstructions';
+          insights.alertLevel = 'warning';
+        } else if (value < 50) {
+          insights.status = 'info';
+          insights.message = 'Object in proximity range';
+          insights.recommendation = 'Normal monitoring';
+          insights.alertLevel = 'info';
         } else {
-          if (value < 10) {
-            insights.status = 'warning';
-            insights.message = 'Object detected very close';
-            insights.recommendation = 'Check for obstruction or unauthorized access';
-            insights.alertLevel = 'warning';
-          } else if (value < 50) {
-            insights.status = 'info';
-            insights.message = 'Object detected in proximity';
-            insights.recommendation = 'Monitor movement in area';
-            insights.alertLevel = 'info';
-          } else {
-            insights.status = 'clear';
-            insights.message = 'Area clear - no objects detected';
-            insights.recommendation = 'Normal operation';
-          }
+          insights.status = 'clear';
+          insights.message = 'Area clear - safe distance maintained';
+          insights.recommendation = 'Normal operation';
         }
       }
       break;
