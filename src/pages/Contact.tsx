@@ -40,10 +40,28 @@ const Contact = () => {
       return;
     }
 
-    // Success message (in a real app, this would send to a backend)
+    // Construct the mailto link
+    const recipientEmail = "coreinnovation4@gmail.com";
+    const subject = `IIoT Consultation Request from ${formData.company}`;
+    const body = `A new consultation request has been submitted with the following details:
+
+Name: ${formData.name}
+Company: ${formData.company}
+Email: ${formData.email}
+
+Message:
+${formData.message}
+`;
+
+    const mailtoLink = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    // Open the user's default email client
+    window.location.href = mailtoLink;
+
+    // Success message
     toast({
-      title: "Message Sent Successfully!",
-      description: "Our team will contact you within 24 hours to discuss your IIoT needs.",
+      title: "Opening your email client...",
+      description: "Please complete sending the email to submit your request.",
     });
 
     // Reset form
@@ -62,26 +80,31 @@ const Contact = () => {
     });
   };
 
+  const handleScheduleCall = () => {
+    const phoneNumber = "+916369704741";
+    window.location.href = `tel:${phoneNumber}`;
+  };
+
   const contactInfo = [
     {
       icon: MapPin,
-      title: "Headquarters",
-      content: "1500 Innovation Drive, Suite 200\nTech Valley, CA 95001"
+      title: "Location",
+      content: "Remote"
     },
     {
       icon: Phone,
       title: "Phone",
-      content: "+1 (555) 123-4567"
+      content: "+91 63697 04741"
     },
     {
       icon: Mail,
       title: "Email",
-      content: "info@apexindustrial.ai\nsales@apexindustrial.ai"
+      content: "coreinnovation4@gmail.com\ncoreinnovators4@gmail.com"
     },
     {
       icon: Clock,
       title: "Business Hours",
-      content: "Monday - Friday: 8:00 AM - 6:00 PM PST\n24/7 Emergency Support Available"
+      content: "Monday - Friday: 9:00 AM - 6:00 PM IST\n24/7 Support Available"
     }
   ];
 
@@ -243,7 +266,7 @@ const Contact = () => {
             and learn how we can help optimize your operations.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="navy" size="lg">
+            <Button variant="navy" size="lg" onClick={handleScheduleCall}>
               Schedule a Call
             </Button>
             <Button variant="outline" size="lg">
