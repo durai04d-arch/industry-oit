@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import CoreInnovatorsLogo from "@/assets/coreinnovators-logo.jpg";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,11 +29,13 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-glow rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">AI</span>
-            </div>
-            <span className="text-xl font-bold text-foreground">Apex Industrial Intelligence</span>
+          <Link to="/" className="flex items-center space-x-3">
+            <img 
+              src={CoreInnovatorsLogo} 
+              alt="CoreInnovators Logo" 
+              className="h-10 w-auto object-contain"
+            />
+            <span className="text-xl font-bold text-foreground">CoreInnovators</span>
           </Link>
 
           {/* Desktop Navigation */}
