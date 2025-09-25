@@ -5,12 +5,16 @@ interface User {
   id: string;
   card_uid: string;
   user_name: string;
+  industry?: string;
+  email?: string;
+  phone?: string;
+  company_name?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (cardUid: string) => Promise<{ success: boolean; message: string }>;
+  login: (cardUid: string) => Promise<{ success: boolean; message: string; needsSetup?: boolean }>;
   logout: () => void;
 }
 
@@ -41,7 +45,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsLoading(false);
   }, []);
 
-  const login = async (cardUid: string): Promise<{ success: boolean; message: string }> => {
+  const login = async (cardUid: string): Promise<{ success: boolean; message: string; needsSetup?: boolean }> => {
     try {
       setIsLoading(true);
       
@@ -74,16 +78,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         };
       }
 
+      // Check if user profile exists
+      const { data: profileData, error: profileError } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('card_uid', cardUid)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error('Profile check error:', profileError);
+      }
+
+      if (!profileData) {
+        // User needs to complete setup
+        localStorage.setItem('temp_card_uid', cardUid);
+        return { 
+          success: true, 
+          message: `Welcome ${cardData.user_name}! Please complete your profile setup.`,
+          needsSetup: true 
+        };
+      }
+
       const userData: User = {
         id: cardData.id,
         card_uid: cardData.card_uid,
         user_name: cardData.user_name,
+        industry: profileData.industry,
+        email: profileData.email,
+        phone: profileData.phone,
+        company_name: profileData.company_name
       };
 
       setUser(userData);
       localStorage.setItem('rfid_user', JSON.stringify(userData));
       
-      return { success: true, message: `Access Granted - Welcome ${cardData.user_name}` };
+      return { success: true, message: `Access Granted - Welcome back ${cardData.user_name}` };
     } catch (error) {
       console.error('Login error:', error);
       return { success: false, message: 'System Error - Please Try Again' };

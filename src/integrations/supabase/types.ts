@@ -48,6 +48,7 @@ export type Database = {
           gas_level: number | null
           humidity: number
           temperature: number
+          Time: string | null
         }
         Insert: {
           card_uid?: string | null
@@ -55,6 +56,7 @@ export type Database = {
           gas_level?: number | null
           humidity: number
           temperature: number
+          Time?: string | null
         }
         Update: {
           card_uid?: string | null
@@ -62,6 +64,7 @@ export type Database = {
           gas_level?: number | null
           humidity?: number
           temperature?: number
+          Time?: string | null
         }
         Relationships: []
       }
@@ -95,6 +98,42 @@ export type Database = {
           unit?: string
           updated_at?: string
           value?: number
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          card_uid: string
+          company_name: string | null
+          created_at: string
+          email: string | null
+          id: string
+          industry: string
+          phone: string | null
+          updated_at: string
+          user_name: string
+        }
+        Insert: {
+          card_uid: string
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          industry: string
+          phone?: string | null
+          updated_at?: string
+          user_name: string
+        }
+        Update: {
+          card_uid?: string
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          industry?: string
+          phone?: string | null
+          updated_at?: string
+          user_name?: string
         }
         Relationships: []
       }

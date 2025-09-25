@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { IntelligentSensorCard } from './IntelligentSensorCard';
+import { IndustrySpecificSensorCard } from './IndustrySpecificSensorCard';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface SensorReading {
   id: string;
@@ -28,6 +29,7 @@ const sensorConfigs: SensorConfig[] = [
 
 
 export const SensorDashboard: React.FC = () => {
+  const { user } = useAuth();
   const [sensorReadings, setSensorReadings] = useState<{ [key: string]: SensorReading }>({});
   const [isLoading, setIsLoading] = useState(true);
 
@@ -123,14 +125,26 @@ export const SensorDashboard: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {sensorConfigs.map((config) => (
-          <IntelligentSensorCard
-            key={config.type}
-            config={config}
-            reading={sensorReadings[config.type] || null}
-            isLoading={isLoading}
-          />
-        ))}
+        {sensorConfigs.map((config) => {
+          const reading = sensorReadings[config.type];
+          return reading ? (
+            <IndustrySpecificSensorCard
+              key={config.type}
+              name={config.name}
+              value={parseFloat(reading.value.toString())}
+              unit={reading.unit}
+              type={reading.sensor_type}
+              location={reading.location}
+              industry={user?.industry}
+            />
+          ) : (
+            <div key={config.type} className="bg-card border border-border rounded-lg p-6 text-center">
+              <div className="text-2xl text-muted-foreground">--</div>
+              <div className="text-sm text-muted-foreground mt-2">{config.name}</div>
+              <div className="text-xs text-muted-foreground mt-1">No data available</div>
+            </div>
+          );
+        })}
       </div>
 
       <div className="text-center text-sm text-muted-foreground">

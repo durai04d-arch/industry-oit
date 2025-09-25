@@ -11,6 +11,8 @@ import Loading from "./pages/Loading";
 import Dashboard from "./pages/Dashboard";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import IndustrySelection from "./pages/IndustrySelection";
+import UserDetails from "./pages/UserDetails";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +27,8 @@ const App = () => (
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/loading" element={<Loading />} />
+              <Route path="/industry-selection" element={<IndustrySelection />} />
+              <Route path="/user-details" element={<UserDetails />} />
               <Route path="/" element={<Login />} />
               <Route path="/dashboard" element={
                 <ProtectedRoute>

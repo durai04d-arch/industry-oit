@@ -40,7 +40,12 @@ const Login: React.FC = () => {
         description: result.message,
         className: "bg-green-500 text-white",
       });
-      navigate('/loading');
+      
+      if (result.needsSetup) {
+        navigate('/industry-selection');
+      } else {
+        navigate('/loading');
+      }
     } else {
       toast({
         title: "Authentication Failed",
@@ -109,6 +114,14 @@ const Login: React.FC = () => {
                   Authenticate Card
                 </>
               )}
+            </Button>
+            
+            <Button 
+              onClick={() => navigate('/loading')} 
+              variant="outline"
+              className="w-full mt-2"
+            >
+              Skip Verification (Testing)
             </Button>
 
             {/* Demo Cards */}
