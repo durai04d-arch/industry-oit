@@ -178,66 +178,57 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-md animate-fade-in">
-      <div 
-        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-4xl h-[85vh] bg-white border border-navy-300 rounded-2xl shadow-2xl overflow-hidden animate-entrance-epic"
-        onMouseLeave={onClose}
-      >
-        <div className="flex flex-col h-full text-black">
+    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm animate-fade-in">
+      <div className="fixed inset-4 z-50 bg-background border border-primary/20 rounded-lg shadow-navy overflow-hidden animate-scale-in">
+        <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="bg-gradient-to-r from-navy-600 to-navy-800 p-6 text-white relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-navy-400/20 to-transparent animate-shimmer-wave"></div>
-            <div className="flex items-center justify-between relative z-10">
+          <div className="bg-gradient-navy p-6 text-primary-foreground">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm animate-float-continuous border border-white/30">
-                  <Settings className="h-8 w-8 animate-spin-slow" />
+                <div className="p-3 bg-primary-foreground/20 rounded-lg animate-pulse-glow">
+                  <Settings className="h-8 w-8" />
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold animate-type-writer bg-gradient-to-r from-white to-navy-100 bg-clip-text text-transparent">
-                    {sensorName} Sensor
-                  </h2>
-                  <p className="text-white/90 animate-slide-up-delayed text-lg">
+                  <h2 className="text-2xl font-bold animate-slide-down">{sensorName} Sensor</h2>
+                  <p className="text-primary-foreground/80 animate-fade-in">
                     Real-time monitoring and historical analysis
                   </p>
                 </div>
               </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={onClose}
-                  className="text-white hover:bg-white/20 animate-bounce-in border border-white/30 backdrop-blur-sm group"
-                >
-                  <X className="h-6 w-6 group-hover:rotate-90 transition-transform duration-300" />
-                </Button>
-              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onClose}
+                className="text-primary-foreground hover:bg-primary-foreground/20 animate-scale-in"
+              >
+                <X className="h-6 w-6" />
+              </Button>
             </div>
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-auto p-6 bg-gray-50">
+          <div className="flex-1 overflow-auto p-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Current Reading & Gauge */}
               <div className="lg:col-span-1 space-y-4">
-                <Card className="animate-card-rise bg-white border-navy-200 shadow-lg hover:shadow-xl transition-all duration-500">
+                <Card className="animate-slide-up">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-black">
-                      <TrendingUp className="h-5 w-5 text-navy-600 animate-pulse-gentle" />
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5 text-primary animate-float" />
                       Current Reading
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="text-center">
                     <div className="relative mx-auto w-48 h-48 mb-4">
                       {/* Animated Gauge */}
-                      <svg className="w-full h-full transform -rotate-90 animate-spin-slow-reverse" viewBox="0 0 100 100">
+                      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                         <circle
                           cx="50"
                           cy="50"
                           r="40"
-                          stroke="#e5e7eb"
+                          stroke="hsl(var(--border))"
                           strokeWidth="8"
                           fill="none"
-                          className="animate-pulse-ring"
                         />
                         <circle
                           cx="50"
@@ -248,51 +239,50 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
                           fill="none"
                           strokeDasharray={`${getGaugePercentage() * 2.51} 251`}
                           strokeLinecap="round"
-                          className="animate-gauge-fill"
+                          className="animate-shimmer"
                           style={{
-                            transition: 'stroke-dasharray 3s cubic-bezier(0.4, 0, 0.2, 1)',
-                            filter: 'drop-shadow(0 0 8px rgba(34, 39, 92, 0.4))'
+                            transition: 'stroke-dasharray 2s cubic-bezier(0.4, 0, 0.2, 1)'
                           }}
                         />
                       </svg>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center animate-scale-pulse">
-                          <div className="text-4xl font-bold text-black animate-number-count bg-gradient-to-b from-black to-gray-700 bg-clip-text">
+                        <div className="text-center">
+                          <div className="text-3xl font-bold text-primary animate-bounce-in">
                             {currentValue.toFixed(1)}
                           </div>
-                          <div className="text-sm text-gray-600 font-medium">{unit}</div>
+                          <div className="text-sm text-muted-foreground">{unit}</div>
                         </div>
                       </div>
                     </div>
-                    <Badge variant="default" className="animate-glow-pulse bg-navy-600 text-white border-navy-400">
+                    <Badge variant="default" className="animate-fade-in">
                       Live Reading
                     </Badge>
                   </CardContent>
                 </Card>
 
-                <Card className="animate-card-rise bg-white border-navy-200 shadow-lg hover:shadow-xl transition-all duration-500" style={{ animationDelay: '0.1s' }}>
+                <Card className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-black">
-                      <MapPin className="h-5 w-5 text-navy-600 animate-bounce-gentle" />
+                    <CardTitle className="flex items-center gap-2">
+                      <MapPin className="h-5 w-5 text-primary animate-float" />
                       Sensor Details
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <div className="flex justify-between animate-slide-in-left">
-                      <span className="text-gray-600">Type:</span>
-                      <span className="font-medium text-black">{sensorType}</span>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Type:</span>
+                      <span className="font-medium">{sensorType}</span>
                     </div>
-                    <div className="flex justify-between animate-slide-in-left" style={{ animationDelay: '0.1s' }}>
-                      <span className="text-gray-600">Location:</span>
-                      <span className="font-medium text-black">{location || 'N/A'}</span>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Location:</span>
+                      <span className="font-medium">{location || 'N/A'}</span>
                     </div>
-                    <div className="flex justify-between animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
-                      <span className="text-gray-600">Model:</span>
-                      <span className="font-medium text-black">STX-{sensorType.toUpperCase()}-2024</span>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Model:</span>
+                      <span className="font-medium">STX-{sensorType.toUpperCase()}-2024</span>
                     </div>
-                    <div className="flex justify-between animate-slide-in-left" style={{ animationDelay: '0.3s' }}>
-                      <span className="text-gray-600">Status:</span>
-                      <Badge variant="default" className="animate-status-pulse bg-green-500 text-white">Active</Badge>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Status:</span>
+                      <Badge variant="default" className="animate-pulse">Active</Badge>
                     </div>
                   </CardContent>
                 </Card>
@@ -300,11 +290,11 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
 
               {/* Historical Data Chart */}
               <div className="lg:col-span-2">
-                <Card className="h-full animate-card-rise bg-white border-navy-200 shadow-lg hover:shadow-xl transition-all duration-500" style={{ animationDelay: '0.2s' }}>
+                <Card className="h-full animate-slide-up" style={{ animationDelay: '0.2s' }}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle className="flex items-center gap-2 text-black">
-                        <Calendar className="h-5 w-5 text-navy-600 animate-wiggle" />
+                      <CardTitle className="flex items-center gap-2">
+                        <Calendar className="h-5 w-5 text-primary animate-float" />
                         Historical Data
                       </CardTitle>
                       <div className="flex gap-2">
@@ -381,33 +371,33 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
             </div>
 
             {/* Download Section */}
-            <Card className="mt-6 animate-card-rise bg-white border-navy-200 shadow-lg hover:shadow-xl transition-all duration-500" style={{ animationDelay: '0.3s' }}>
+            <Card className="mt-6 animate-slide-up" style={{ animationDelay: '0.3s' }}>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-black">
-                  <Download className="h-5 w-5 text-navy-600 animate-bounce-gentle" />
+                <CardTitle className="flex items-center gap-2">
+                  <Download className="h-5 w-5 text-primary animate-float" />
                   Export Data
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-4">
                   <Select value={downloadFormat} onValueChange={setDownloadFormat}>
-                    <SelectTrigger className="w-32 border-navy-300 text-black">
+                    <SelectTrigger className="w-32">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border-navy-300">
-                      <SelectItem value="pdf" className="text-black hover:bg-navy-50">PDF Report</SelectItem>
-                      <SelectItem value="csv" className="text-black hover:bg-navy-50">CSV Data</SelectItem>
+                    <SelectContent>
+                      <SelectItem value="pdf">PDF Report</SelectItem>
+                      <SelectItem value="csv">CSV Data</SelectItem>
                     </SelectContent>
                   </Select>
                   <Button 
                     onClick={downloadData}
                     disabled={historicalData.length === 0}
-                    className="animate-button-glow bg-navy-600 hover:bg-navy-700 text-white border-navy-400"
+                    className="animate-bounce-in"
                   >
-                    <Download className="h-4 w-4 mr-2 animate-bounce-gentle" />
+                    <Download className="h-4 w-4 mr-2" />
                     Download {downloadFormat.toUpperCase()}
                   </Button>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     Download sensor data for the selected time range ({timeRange})
                   </p>
                 </div>
