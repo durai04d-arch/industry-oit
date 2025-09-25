@@ -1,7 +1,8 @@
 import React from 'react';
-import { X, AlertTriangle, AlertCircle, Info } from 'lucide-react';
+import { X, AlertTriangle, AlertCircle, Info, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
 
 interface AlertModalProps {
   isOpen: boolean;
@@ -24,7 +25,14 @@ const AlertModal: React.FC<AlertModalProps> = ({
   sensorValue,
   unit,
 }) => {
+  const navigate = useNavigate();
+  
   if (!isOpen) return null;
+  
+  const handleBackToDashboard = () => {
+    onClose();
+    navigate('/dashboard');
+  };
 
   const getAlertIcon = () => {
     switch (alertLevel) {
@@ -62,7 +70,7 @@ const AlertModal: React.FC<AlertModalProps> = ({
       
       {/* Modal */}
       <div className={cn(
-        "relative w-full max-w-md p-8 rounded-2xl border-2 shadow-alert animate-slide-up",
+        "relative w-full max-w-md p-8 rounded-2xl border-2 shadow-alert animate-slide-up bg-card",
         getAlertStyles()
       )}>
         {/* Close Button */}
@@ -101,14 +109,24 @@ const AlertModal: React.FC<AlertModalProps> = ({
             {message}
           </p>
 
-          {/* Action Button */}
-          <Button
-            onClick={onClose}
-            className="w-full bg-gradient-to-r from-primary to-primary-glow hover:shadow-navy transform hover:scale-105 transition-all duration-300 animate-bounce-in"
-            size="lg"
-          >
-            Acknowledge Alert
-          </Button>
+          {/* Action Buttons */}
+          <div className="flex gap-3">
+            <Button
+              onClick={handleBackToDashboard}
+              className="flex-1 animate-bounce-in bg-black text-white hover:bg-zinc-800"
+              size="lg"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Dashboard
+            </Button>
+            <Button
+              onClick={onClose}
+              className="flex-1 bg-gradient-to-r from-primary to-primary-glow hover:shadow-navy transform hover:scale-105 transition-all duration-300 animate-bounce-in"
+              size="lg"
+            >
+              Acknowledge Alert
+            </Button>
+          </div>
         </div>
       </div>
     </div>
