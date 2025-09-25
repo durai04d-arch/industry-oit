@@ -8,55 +8,58 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 220 20% 8%;
-    --foreground: 210 30% 95%;
+    --background: 220 30% 5%;
+    --foreground: 0 0% 98%;
 
-    --card: 220 15% 12%;
-    --card-foreground: 210 30% 95%;
+    --card: 220 40% 8%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 220 15% 12%;
-    --popover-foreground: 210 30% 95%;
+    --popover: 220 40% 8%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 145 85% 55%;
-    --primary-foreground: 220 20% 8%;
+    --primary: 220 90% 30%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 220 15% 18%;
-    --secondary-foreground: 210 30% 95%;
+    --secondary: 220 30% 15%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 220 15% 18%;
-    --muted-foreground: 210 20% 65%;
+    --muted: 220 30% 15%;
+    --muted-foreground: 220 10% 70%;
 
-    --accent: 145 85% 55%;
-    --accent-foreground: 220 20% 8%;
+    --accent: 220 90% 35%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 85% 60%;
-    --destructive-foreground: 210 30% 95%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 220 15% 22%;
-    --input: 220 15% 22%;
-    --ring: 145 85% 55%;
+    --border: 220 30% 20%;
+    --input: 220 30% 20%;
+    --ring: 220 90% 30%;
 
     --radius: 0.75rem;
 
-    /* Industrial IoT Design System */
-    --primary-glow: 145 85% 65%;
-    --tech-blue: 210 80% 45%;
-    --steel-gray: 220 10% 25%;
+    /* Navy Blue & White Design System */
+    --primary-glow: 220 90% 40%;
+    --navy-light: 220 60% 25%;
+    --navy-accent: 220 90% 50%;
     --warning-orange: 25 95% 60%;
     
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-dark: linear-gradient(180deg, hsl(var(--background)), hsl(220 20% 4%));
-    --gradient-tech: linear-gradient(135deg, hsl(var(--tech-blue)), hsl(var(--primary)));
+    --gradient-dark: linear-gradient(180deg, hsl(var(--background)), hsl(220 30% 2%));
+    --gradient-navy: linear-gradient(135deg, hsl(var(--navy-light)), hsl(var(--primary)));
+    --gradient-alert: linear-gradient(135deg, hsl(var(--destructive)), hsl(var(--warning-orange)));
     
     /* Shadows */
-    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.3);
-    --shadow-tech: 0 10px 40px -10px hsl(var(--primary) / 0.4);
-    --shadow-card: 0 4px 20px -4px hsl(220 20% 0% / 0.6);
+    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.4);
+    --shadow-navy: 0 10px 40px -10px hsl(var(--primary) / 0.5);
+    --shadow-card: 0 4px 20px -4px hsl(220 30% 0% / 0.8);
+    --shadow-alert: 0 20px 60px -10px hsl(var(--destructive) / 0.6);
     
     /* Animations */
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-spring: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
     --radius: 0.75rem;
 

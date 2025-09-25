@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, Thermometer, Wind, Droplets, Radio } from 'lucide-react';
+import AlertModal from '@/components/AlertModal';
 
 interface SensorInsights {
   status: 'normal' | 'warning' | 'critical' | 'optimal' | 'info' | 'safe' | 'clear';
   message: string;
   recommendation: string;
-  alertLevel: 'info' | 'warning' | 'error';
+  alertLevel: 'low' | 'medium' | 'high' | 'critical';
 }
 
 interface IndustrySpecificSensorCardProps {
@@ -25,7 +26,7 @@ const getIntelligentInsights = (name: string, value: number, unit: string, indus
     status: 'normal',
     message: '',
     recommendation: '',
-    alertLevel: 'info'
+    alertLevel: 'low'
   };
 
   switch (name.toLowerCase()) {
@@ -36,12 +37,12 @@ const getIntelligentInsights = (name: string, value: number, unit: string, indus
           insights.status = 'critical';
           insights.message = value < 10 ? 'CRITICAL: Temperature too low' : 'CRITICAL: Temperature too high';
           insights.recommendation = value < 10 ? 'Check heating systems, risk of equipment damage' : 'Check cooling systems, equipment overheating risk';
-          insights.alertLevel = 'error';
+          insights.alertLevel = 'critical';
         } else if (value < 15 || value > 35) {
           insights.status = 'warning';
           insights.message = value < 15 ? 'Low temperature detected' : 'High temperature detected';
           insights.recommendation = value < 15 ? 'Monitor heating systems' : 'Monitor cooling systems';
-          insights.alertLevel = 'warning';
+          insights.alertLevel = 'medium';
         } else {
           insights.status = 'optimal';
           insights.message = 'Temperature within normal range (15-35°C)';
@@ -57,12 +58,12 @@ const getIntelligentInsights = (name: string, value: number, unit: string, indus
           insights.status = 'critical';
           insights.message = value < 30 ? 'CRITICAL: Humidity too low' : 'CRITICAL: Humidity too high';
           insights.recommendation = value < 30 ? 'Risk of static electricity, increase humidity' : 'Condensation risk, improve ventilation';
-          insights.alertLevel = 'error';
+          insights.alertLevel = 'critical';
         } else if (value < 40 || value > 70) {
           insights.status = 'warning';
           insights.message = value < 40 ? 'Low humidity detected' : 'High humidity detected';
           insights.recommendation = value < 40 ? 'Monitor humidity levels' : 'Check ventilation systems';
-          insights.alertLevel = 'warning';
+          insights.alertLevel = 'medium';
         } else {
           insights.status = 'optimal';
           insights.message = 'Humidity within optimal range (40-70%)';
@@ -79,12 +80,12 @@ const getIntelligentInsights = (name: string, value: number, unit: string, indus
           insights.status = 'critical';
           insights.message = 'CRITICAL GAS ALERT - Dangerous levels detected';
           insights.recommendation = 'EVACUATE AREA - Check for gas leaks immediately';
-          insights.alertLevel = 'error';
+          insights.alertLevel = 'critical';
         } else if (value < 700) {
           insights.status = 'warning';
           insights.message = 'Low gas levels detected - potential sensor issue';
           insights.recommendation = 'Check sensor calibration and connections';
-          insights.alertLevel = 'warning';
+          insights.alertLevel = 'medium';
         }
       } else {
         insights.status = 'safe';
@@ -101,17 +102,17 @@ const getIntelligentInsights = (name: string, value: number, unit: string, indus
           insights.status = 'critical';
           insights.message = 'CRITICAL: Object very close - collision risk';
           insights.recommendation = 'IMMEDIATE ACTION - Clear obstruction';
-          insights.alertLevel = 'error';
+          insights.alertLevel = 'critical';
         } else if (value < 30) {
           insights.status = 'warning';
           insights.message = 'Object detected close - safety concern';
           insights.recommendation = 'Monitor area, check for obstructions';
-          insights.alertLevel = 'warning';
+          insights.alertLevel = 'high';
         } else if (value < 50) {
           insights.status = 'info';
           insights.message = 'Object in proximity range';
           insights.recommendation = 'Normal monitoring';
-          insights.alertLevel = 'info';
+          insights.alertLevel = 'medium';
         } else {
           insights.status = 'clear';
           insights.message = 'Area clear - safe distance maintained';
@@ -159,55 +160,93 @@ const IndustrySpecificSensorCard: React.FC<IndustrySpecificSensorCardProps> = ({
   location,
   industry 
 }) => {
+  const [showAlert, setShowAlert] = useState(false);
   const insights = getIntelligentInsights(name, value, unit, industry);
   const statusVariant = getStatusVariant(insights.status);
 
+  const handleAlertClick = () => {
+    if (insights.alertLevel !== 'low') {
+      setShowAlert(true);
+    }
+  };
+
   return (
-    <Card className={`bg-card border-border transition-all duration-300 hover:shadow-tech ${
-      insights.status === 'critical' ? 'ring-2 ring-destructive animate-pulse' : ''
-    }`}>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
-          {getIconComponent(type)}
-          {name}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="text-center">
-          <div className="text-3xl font-bold text-foreground">
-            {value.toFixed(1)}
+    <>
+      <Card 
+        className={`bg-card border-border transition-all duration-300 transform hover:scale-105 hover:shadow-navy animate-fade-in cursor-pointer ${
+          insights.status === 'critical' 
+            ? 'ring-2 ring-destructive animate-pulse-glow bg-gradient-to-br from-destructive/10 to-navy-warning/10' 
+            : insights.alertLevel === 'high'
+            ? 'border-navy-warning/50 hover:bg-gradient-to-br hover:from-navy-warning/5 hover:to-primary/5'
+            : 'hover:bg-gradient-to-br hover:from-primary/5 hover:to-navy-light/5'
+        }`}
+        onClick={handleAlertClick}
+      >
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-semibold text-muted-foreground flex items-center gap-2 animate-scale-in">
+            <div className="animate-float">
+              {getIconComponent(type)}
+            </div>
+            {name}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="text-center animate-scale-in">
+            <div className="text-3xl font-bold bg-gradient-to-r from-primary to-navy-accent bg-clip-text text-transparent">
+              {value.toFixed(1)}
+            </div>
+            <div className="text-sm text-muted-foreground">
+              {unit}
+            </div>
           </div>
-          <div className="text-sm text-muted-foreground">
-            {unit}
-          </div>
-        </div>
-        
-        <Badge
-          variant={statusVariant}
-          className={`w-full justify-center transition-all duration-300 ${
-            insights.status === 'critical' ? 'animate-pulse' : ''
-          }`}
-        >
-          {insights.status.toUpperCase()}
-        </Badge>
+          
+          <Badge
+            variant={statusVariant}
+            className={`w-full justify-center transition-all duration-300 animate-bounce-in ${
+              insights.status === 'critical' ? 'animate-pulse' : ''
+            }`}
+          >
+            {insights.status.toUpperCase()}
+          </Badge>
 
-        <Alert className={`${insights.status === 'critical' ? 'border-destructive' : ''}`}>
-          {insights.alertLevel === 'error' && (
-            <AlertTriangle className="h-4 w-4" />
+          {insights.alertLevel !== 'low' && (
+            <Alert className={`border-destructive/30 bg-card/50 cursor-pointer hover:bg-card/70 transition-colors animate-slide-up ${
+              insights.status === 'critical' ? 'border-destructive animate-pulse' : ''
+            }`}>
+              <AlertTriangle className="h-4 w-4 animate-pulse text-destructive" />
+              <AlertDescription className="text-xs">
+                <div className="font-medium mb-1">Click for full alert details</div>
+                <div className="text-muted-foreground truncate">{insights.message}</div>
+              </AlertDescription>
+            </Alert>
           )}
-          <AlertDescription className="text-xs">
-            <div className="font-medium mb-1">{insights.message}</div>
-            <div className="text-muted-foreground">{insights.recommendation}</div>
-          </AlertDescription>
-        </Alert>
 
-        {location && (
-          <div className="text-xs text-muted-foreground text-center">
-            {location}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+          {insights.alertLevel === 'low' && (
+            <div className="text-xs text-muted-foreground animate-fade-in">
+              <div className="font-medium mb-1">{insights.message}</div>
+              <div className="text-muted-foreground">{insights.recommendation}</div>
+            </div>
+          )}
+
+          {location && (
+            <div className="text-xs text-muted-foreground text-center animate-fade-in">
+              📍 {location}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <AlertModal
+        isOpen={showAlert}
+        onClose={() => setShowAlert(false)}
+        title={`${name} Alert`}
+        message={insights.message}
+        alertLevel={insights.alertLevel}
+        sensorName={name}
+        sensorValue={value}
+        unit={unit}
+      />
+    </>
   );
 };
 

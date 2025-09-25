@@ -243,7 +243,7 @@ const Contact = () => {
             and learn how we can help optimize your operations.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="tech" size="lg">
+            <Button variant="navy" size="lg">
               Schedule a Call
             </Button>
             <Button variant="outline" size="lg">
