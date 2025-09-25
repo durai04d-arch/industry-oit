@@ -13,6 +13,7 @@ import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import IndustrySelection from "./pages/IndustrySelection";
 import UserDetails from "./pages/UserDetails";
+import UserProfile from "./pages/UserProfile";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,12 @@ const App = () => (
                 <ProtectedRoute>
                   <Navigation />
                   <Dashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <Navigation />
+                  <UserProfile />
                 </ProtectedRoute>
               } />
               <Route path="/contact" element={
