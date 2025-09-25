@@ -1,11 +1,19 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   const navItems = [
     { name: "Home", path: "/" },
@@ -43,9 +51,30 @@ const Navigation = () => {
                 {item.name}
               </Link>
             ))}
-            <Button variant="hero" size="sm" asChild>
-              <Link to="/contact">Request Demo</Link>
-            </Button>
+            {user ? (
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-muted-foreground">
+                  Welcome, {user.user_name}
+                </span>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handleLogout}
+                  className="flex items-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Button 
+                variant="hero" 
+                size="sm"
+                onClick={() => navigate('/login')}
+              >
+                Login
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -77,11 +106,37 @@ const Navigation = () => {
                   {item.name}
                 </Link>
               ))}
-              <Button variant="hero" size="sm" asChild className="self-start">
-                <Link to="/contact" onClick={() => setIsOpen(false)}>
-                  Request Demo
-                </Link>
-              </Button>
+              {user ? (
+                <div className="space-y-4">
+                  <div className="text-sm text-muted-foreground">
+                    Welcome, {user.user_name}
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="self-start flex items-center gap-2"
+                    onClick={() => {
+                      handleLogout();
+                      setIsOpen(false);
+                    }}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </Button>
+                </div>
+              ) : (
+                <Button 
+                  variant="hero" 
+                  size="sm" 
+                  className="self-start"
+                  onClick={() => {
+                    navigate('/login');
+                    setIsOpen(false);
+                  }}
+                >
+                  Login
+                </Button>
+              )}
             </div>
           </div>
         )}
