@@ -95,3 +95,258 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* God Gamer Level Professional Animations */
+@keyframes entrance-epic {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) rotateY(45deg) translateY(100px);
+    filter: blur(10px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05) rotateY(0deg) translateY(-20px);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg) translateY(0px);
+    filter: blur(0px);
+  }
+}
+
+@keyframes shimmer-wave {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(300%) rotate(45deg);
+  }
+}
+
+@keyframes float-continuous {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-8px) rotate(2deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-8px) rotate(-2deg);
+  }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin-slow-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes slide-up-delayed {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes card-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+    filter: blur(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+@keyframes pulse-gentle {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes bounce-gentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes slide-in-left {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes status-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+
+@keyframes gauge-fill {
+  0% {
+    stroke-dasharray: 0 251;
+  }
+  100% {
+    stroke-dasharray: var(--gauge-progress, 125) 251;
+  }
+}
+
+@keyframes scale-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes number-count {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(34, 39, 92, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(34, 39, 92, 0.8), 0 0 30px rgba(34, 39, 92, 0.6);
+  }
+}
+
+@keyframes button-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(34, 39, 92, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(34, 39, 92, 0.6);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Animation Classes */
+.animate-entrance-epic {
+  animation: entrance-epic 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.animate-shimmer-wave {
+  animation: shimmer-wave 3s infinite linear;
+}
+
+.animate-float-continuous {
+  animation: float-continuous 4s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+.animate-spin-slow-reverse {
+  animation: spin-slow-reverse 12s linear infinite;
+}
+
+.animate-slide-up-delayed {
+  animation: slide-up-delayed 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-card-rise {
+  animation: card-rise 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.animate-pulse-gentle {
+  animation: pulse-gentle 2s ease-in-out infinite;
+}
+
+.animate-bounce-gentle {
+  animation: bounce-gentle 2s ease-in-out infinite;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-status-pulse {
+  animation: status-pulse 2s infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 1s ease-in-out infinite;
+}
+
+.animate-gauge-fill {
+  animation: gauge-fill 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-scale-pulse {
+  animation: scale-pulse 2s ease-in-out infinite;
+}
+
+.animate-number-count {
+  animation: number-count 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-button-glow {
+  animation: button-glow 2s ease-in-out infinite;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s ease-in-out infinite;
+}
