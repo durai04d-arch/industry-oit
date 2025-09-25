@@ -28,6 +28,7 @@ const sensorConfigs: SensorConfig[] = [
   { type: 'pressure', name: 'PRESSURE', alertThreshold: 200, icon: '⚡' },
   { type: 'humidity', name: 'HUMIDITY', alertThreshold: 80, icon: '💧' },
   { type: 'voltage', name: 'VOLTAGE', alertThreshold: 450, icon: '🔌' },
+  { type: 'ultrasonic', name: 'PROXIMITY', alertThreshold: 10, icon: '📡' },
 ];
 
 const SensorCard: React.FC<{ config: SensorConfig; reading: SensorReading | null; isLoading: boolean }> = ({
