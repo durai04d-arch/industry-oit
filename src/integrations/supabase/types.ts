@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      rfid_cards: {
+        Row: {
+          card_uid: string
+          created_at: string
+          id: string
+          is_active: boolean
+          updated_at: string
+          user_name: string
+        }
+        Insert: {
+          card_uid: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          user_name: string
+        }
+        Update: {
+          card_uid?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          user_name?: string
+        }
+        Relationships: []
+      }
+      sensor_data: {
+        Row: {
+          card_uid: string | null
+          distance_cm: number | null
+          gas_level: number | null
+          humidity: number
+          temperature: number
+        }
+        Insert: {
+          card_uid?: string | null
+          distance_cm?: number | null
+          gas_level?: number | null
+          humidity: number
+          temperature: number
+        }
+        Update: {
+          card_uid?: string | null
+          distance_cm?: number | null
+          gas_level?: number | null
+          humidity?: number
+          temperature?: number
+        }
+        Relationships: []
+      }
       sensor_readings: {
         Row: {
           created_at: string
