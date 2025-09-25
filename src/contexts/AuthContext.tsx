@@ -46,27 +46,44 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsLoading(true);
       
       // Check if RFID card exists and is active
-      const { data, error } = await supabase
+      const { data: cardData, error: cardError } = await supabase
         .from('rfid_cards')
         .select('*')
         .eq('card_uid', cardUid)
         .eq('is_active', true)
         .single();
 
-      if (error || !data) {
+      if (cardError || !cardData) {
         return { success: false, message: 'Access Denied - Invalid Card' };
       }
 
+      // Check for recent sensor data (last 5 minutes) with matching card_uid
+      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+      const { data: sensorData, error: sensorError } = await supabase
+        .from('sensor_data')
+        .select('*')
+        .eq('card_uid', cardUid)
+        .gte('created_at', fiveMinutesAgo)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (sensorError || !sensorData || sensorData.length === 0) {
+        return { 
+          success: false, 
+          message: 'Access Denied - No recent sensor activity detected. Please scan your card at the sensor station first.' 
+        };
+      }
+
       const userData: User = {
-        id: data.id,
-        card_uid: data.card_uid,
-        user_name: data.user_name,
+        id: cardData.id,
+        card_uid: cardData.card_uid,
+        user_name: cardData.user_name,
       };
 
       setUser(userData);
       localStorage.setItem('rfid_user', JSON.stringify(userData));
       
-      return { success: true, message: 'Access Granted' };
+      return { success: true, message: `Access Granted - Welcome ${cardData.user_name}` };
     } catch (error) {
       console.error('Login error:', error);
       return { success: false, message: 'System Error - Please Try Again' };
