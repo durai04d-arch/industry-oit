@@ -183,7 +183,7 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
         className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-4xl h-[85vh] bg-white border border-navy-300 rounded-2xl shadow-2xl overflow-hidden animate-entrance-epic"
         onMouseLeave={onClose}
       >
-        <div className="flex flex-col h-full text-navy-800">
+        <div className="flex flex-col h-full text-black">
           {/* Header */}
           <div className="bg-gradient-to-r from-navy-600 to-navy-800 p-6 text-white relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-navy-400/20 to-transparent animate-shimmer-wave"></div>
@@ -221,7 +221,7 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
               <div className="lg:col-span-1 space-y-4">
                 <Card className="animate-card-rise bg-white border-navy-200 shadow-lg hover:shadow-xl transition-all duration-500">
                   <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-navy-800">
+                    <CardTitle className="flex items-center gap-2 text-black">
                       <TrendingUp className="h-5 w-5 text-navy-600 animate-pulse-gentle" />
                       Current Reading
                     </CardTitle>
@@ -257,10 +257,10 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
                       </svg>
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="text-center animate-scale-pulse">
-                          <div className="text-4xl font-bold text-navy-800 animate-number-count bg-gradient-to-b from-navy-800 to-navy-600 bg-clip-text">
+                          <div className="text-4xl font-bold text-black animate-number-count bg-gradient-to-b from-black to-gray-700 bg-clip-text">
                             {currentValue.toFixed(1)}
                           </div>
-                          <div className="text-sm text-navy-600 font-medium">{unit}</div>
+                          <div className="text-sm text-gray-600 font-medium">{unit}</div>
                         </div>
                       </div>
                     </div>
@@ -272,26 +272,26 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
 
                 <Card className="animate-card-rise bg-white border-navy-200 shadow-lg hover:shadow-xl transition-all duration-500" style={{ animationDelay: '0.1s' }}>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-navy-800">
+                    <CardTitle className="flex items-center gap-2 text-black">
                       <MapPin className="h-5 w-5 text-navy-600 animate-bounce-gentle" />
                       Sensor Details
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="flex justify-between animate-slide-in-left">
-                      <span className="text-navy-600">Type:</span>
-                      <span className="font-medium text-navy-800">{sensorType}</span>
+                      <span className="text-gray-600">Type:</span>
+                      <span className="font-medium text-black">{sensorType}</span>
                     </div>
                     <div className="flex justify-between animate-slide-in-left" style={{ animationDelay: '0.1s' }}>
-                      <span className="text-navy-600">Location:</span>
-                      <span className="font-medium text-navy-800">{location || 'N/A'}</span>
+                      <span className="text-gray-600">Location:</span>
+                      <span className="font-medium text-black">{location || 'N/A'}</span>
                     </div>
                     <div className="flex justify-between animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
-                      <span className="text-navy-600">Model:</span>
-                      <span className="font-medium text-navy-800">STX-{sensorType.toUpperCase()}-2024</span>
+                      <span className="text-gray-600">Model:</span>
+                      <span className="font-medium text-black">STX-{sensorType.toUpperCase()}-2024</span>
                     </div>
                     <div className="flex justify-between animate-slide-in-left" style={{ animationDelay: '0.3s' }}>
-                      <span className="text-navy-600">Status:</span>
+                      <span className="text-gray-600">Status:</span>
                       <Badge variant="default" className="animate-status-pulse bg-green-500 text-white">Active</Badge>
                     </div>
                   </CardContent>
@@ -303,7 +303,7 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
                 <Card className="h-full animate-card-rise bg-white border-navy-200 shadow-lg hover:shadow-xl transition-all duration-500" style={{ animationDelay: '0.2s' }}>
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle className="flex items-center gap-2 text-navy-800">
+                      <CardTitle className="flex items-center gap-2 text-black">
                         <Calendar className="h-5 w-5 text-navy-600 animate-wiggle" />
                         Historical Data
                       </CardTitle>
@@ -383,7 +383,7 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
             {/* Download Section */}
             <Card className="mt-6 animate-card-rise bg-white border-navy-200 shadow-lg hover:shadow-xl transition-all duration-500" style={{ animationDelay: '0.3s' }}>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-navy-800">
+                <CardTitle className="flex items-center gap-2 text-black">
                   <Download className="h-5 w-5 text-navy-600 animate-bounce-gentle" />
                   Export Data
                 </CardTitle>
@@ -391,12 +391,12 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
               <CardContent>
                 <div className="flex items-center gap-4">
                   <Select value={downloadFormat} onValueChange={setDownloadFormat}>
-                    <SelectTrigger className="w-32 border-navy-300 text-navy-800">
+                    <SelectTrigger className="w-32 border-navy-300 text-black">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-navy-300">
-                      <SelectItem value="pdf" className="text-navy-800 hover:bg-navy-50">PDF Report</SelectItem>
-                      <SelectItem value="csv" className="text-navy-800 hover:bg-navy-50">CSV Data</SelectItem>
+                      <SelectItem value="pdf" className="text-black hover:bg-navy-50">PDF Report</SelectItem>
+                      <SelectItem value="csv" className="text-black hover:bg-navy-50">CSV Data</SelectItem>
                     </SelectContent>
                   </Select>
                   <Button 
@@ -407,14 +407,7 @@ const SensorDetailModal: React.FC<SensorDetailModalProps> = ({
                     <Download className="h-4 w-4 mr-2 animate-bounce-gentle" />
                     Download {downloadFormat.toUpperCase()}
                   </Button>
-                  <Button 
-                    onClick={onClose}
-                    variant="outline"
-                    className="animate-button-glow border-navy-600 text-navy-800 hover:bg-navy-50"
-                  >
-                    Cancel
-                  </Button>
-                  <p className="text-sm text-navy-600">
+                  <p className="text-sm text-gray-600">
                     Download sensor data for the selected time range ({timeRange})
                   </p>
                 </div>
