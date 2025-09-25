@@ -117,7 +117,17 @@ const Login: React.FC = () => {
             </Button>
             
             <Button 
-              onClick={() => navigate('/loading')} 
+              onClick={() => {
+                // Set a demo user for testing
+                const demoUser = {
+                  id: 'demo-user-id',
+                  card_uid: 'DEMO_CARD_123',
+                  user_name: 'Demo User',
+                  industry: 'Electronics'
+                };
+                localStorage.setItem('rfid_user', JSON.stringify(demoUser));
+                navigate('/loading');
+              }} 
               variant="outline"
               className="w-full mt-2"
             >
