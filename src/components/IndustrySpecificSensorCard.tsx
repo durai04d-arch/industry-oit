@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { createRoot, Root } from 'react-dom/client';
 
 // --- Inlined AlertModal Component ---
 const AlertModal = ({
@@ -167,59 +168,131 @@ const AlertModal = ({
   );
 };
 
-// --- ChatModal (new small chat widget) ---
-const ChatModal = ({ isOpen, onClose, sensorName }) => {
-  const [messages, setMessages] = useState([{ role: 'system', text: `You are a support assistant for sensor ${sensorName}.` }]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
+// --- Replace per-card ChatModal with a single global chat root ---
+// module-level root and setter
+let __globalChatRoot: Root | null = null;
+let __setGlobalChatState: ((s: { isOpen: boolean; sensorName?: string }) => void) | null = null;
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
-    const userMsg = { role: 'user', text: input.trim() };
-    setMessages((m) => [...m, userMsg]);
-    setInput('');
-    setLoading(true);
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sensorName, message: input.trim() }),
-      });
-      const json = await res.json();
-      const reply = json?.reply || 'Sorry, no response.';
-      setMessages((m) => [...m, { role: 'assistant', text: reply }]);
-    } catch (err) {
-      setMessages((m) => [...m, { role: 'assistant', text: 'Error contacting chat service.' }]);
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+function ensureGlobalChatRoot() {
+  if (typeof window === 'undefined') return;
+  if (__globalChatRoot) return;
 
-  if (!isOpen) return null;
-  return (
-    <div className="fixed inset-0 z-60 flex items-end justify-center p-4">
-      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-card rounded-lg border p-4 z-70">
-        <div className="flex justify-between items-center mb-2">
-          <div className="font-semibold">Sensor Assistant - {sensorName}</div>
-          <Button variant="ghost" size="icon" onClick={onClose}><X className="w-4 h-4" /></Button>
-        </div>
-        <div className="h-64 overflow-auto mb-2 p-2 bg-background rounded">
-          {messages.filter(m => m.role !== 'system').map((m, i) => (
-            <div key={i} className={`mb-2 ${m.role === 'user' ? 'text-right' : 'text-left'}`}>
-              <div className={`inline-block px-3 py-1 rounded ${m.role === 'user' ? 'bg-primary/10' : 'bg-green-50'}`}>{m.text}</div>
-            </div>
-          ))}
-        </div>
-        <div className="flex gap-2">
-          <input className="flex-1 rounded border px-2 py-1" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') sendMessage(); }} />
-          <Button onClick={sendMessage} disabled={loading}>{loading ? '...' : 'Send'}</Button>
+  const container = document.createElement('div');
+  container.id = 'global-chat-root';
+  document.body.appendChild(container);
+
+  function GlobalChat() {
+    const [state, setState] = useState<{ isOpen: boolean; sensorName?: string }>({ isOpen: false });
+    useEffect(() => {
+      __setGlobalChatState = setState;
+      return () => {
+        __setGlobalChatState = null;
+      };
+    }, []);
+
+    const close = () => {
+      setState({ isOpen: false, sensorName: undefined });
+    };
+
+    const sendMessage = async (input: string, addMessage: (m: any) => void) => {
+      if (!input.trim()) return;
+      addMessage({ role: 'user', text: input.trim() });
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sensorName: state.sensorName, message: input.trim() }),
+        });
+        const json = await res.json();
+        addMessage({ role: 'assistant', text: json?.reply || 'Sorry, no response.' });
+      } catch (err) {
+        addMessage({ role: 'assistant', text: 'Error contacting chat service.' });
+        // eslint-disable-next-line no-console
+        console.error(err);
+      }
+    };
+
+    // Local messages state inside global chat
+    const [messages, setMessages] = useState<{ role: string; text: string }[]>([]);
+    useEffect(() => {
+      // reset messages when sensor changes
+      setMessages([{ role: 'system', text: `You are a support assistant for sensor ${state.sensorName || ''}.` }]);
+    }, [state.sensorName]);
+
+    if (!state.isOpen) return null;
+
+    return (
+      <div className="fixed inset-0 z-60 flex items-end justify-center p-4">
+        <div className="absolute inset-0 bg-black/30" onClick={close} />
+        <div className="relative w-full max-w-md bg-card rounded-lg border p-4 z-70">
+          <div className="flex justify-between items-center mb-2">
+            <div className="font-semibold">Sensor Assistant - {state.sensorName}</div>
+            <button className="p-1" onClick={close}><X className="w-4 h-4" /></button>
+          </div>
+          <div className="h-64 overflow-auto mb-2 p-2 bg-background rounded">
+            {messages.filter(m => m.role !== 'system').map((m, i) => (
+              <div key={i} className={`mb-2 ${m.role === 'user' ? 'text-right' : 'text-left'}`}>
+                <div className={`inline-block px-3 py-1 rounded ${m.role === 'user' ? 'bg-primary/10' : 'bg-green-50'}`}>{m.text}</div>
+              </div>
+            ))}
+          </div>
+          <GlobalChatInput
+            onSend={async (text: string) => {
+              // add immediately then call
+              setMessages((m) => [...m, { role: 'user', text }]);
+              try {
+                const res = await fetch('/api/chat', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ sensorName: state.sensorName, message: text }),
+                });
+                const json = await res.json();
+                setMessages((m) => [...m, { role: 'assistant', text: json?.reply || 'Sorry, no response.' }]);
+              } catch (err) {
+                setMessages((m) => [...m, { role: 'assistant', text: 'Error contacting chat service.' }]);
+                // eslint-disable-next-line no-console
+                console.error(err);
+              }
+            }}
+          />
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+
+  // small input component used inside global chat
+  function GlobalChatInput({ onSend }: { onSend: (text: string) => void }) {
+    const [input, setInput] = useState('');
+    return (
+      <div className="flex gap-2">
+        <input
+          className="flex-1 rounded border px-2 py-1"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { onSend(input); setInput(''); } }}
+        />
+        <button className="px-3 py-1 bg-primary text-white rounded" onClick={() => { onSend(input); setInput(''); }}>Send</button>
+      </div>
+    );
+  }
+
+  __globalChatRoot = createRoot(container);
+  __globalChatRoot.render(<GlobalChat />);
+}
+
+export function openGlobalChat(sensorName?: string) {
+  if (typeof window === 'undefined') return;
+  ensureGlobalChatRoot();
+  if (__setGlobalChatState) {
+    __setGlobalChatState({ isOpen: true, sensorName });
+  }
+}
+
+export function closeGlobalChat() {
+  if (__setGlobalChatState) {
+    __setGlobalChatState({ isOpen: false, sensorName: undefined });
+  }
+}
 
 // --- Inlined SensorDetailModal Component ---
 const SensorDetailModal = ({
@@ -490,17 +563,16 @@ const getIconComponent = (type: string) => {
   }
 };
 
-const IndustrySpecificSensorCard: React.FC<IndustrySpecificSensorCardProps> = ({ 
-  name, 
-  value, 
-  unit, 
-  type, 
+const IndustrySpecificSensorCard: React.FC<IndustrySpecificSensorCardProps> = ({
+  name,
+  value,
+  unit,
+  type,
   location,
   industry 
 }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [openChat, setOpenChat] = useState(false);
   const insights = getIntelligentInsights(name, value, unit, industry);
   const statusVariant = getStatusVariant(insights.status);
 
@@ -535,7 +607,17 @@ const IndustrySpecificSensorCard: React.FC<IndustrySpecificSensorCardProps> = ({
             {name}
           </CardTitle>
           <div className="ml-auto">
-            <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setOpenChat(true); }}>Chat</Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                // open the single global chat modal for this sensor
+                openGlobalChat(name);
+              }}
+            >
+              Chat
+            </Button>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -606,8 +688,6 @@ const IndustrySpecificSensorCard: React.FC<IndustrySpecificSensorCardProps> = ({
         unit={unit}
         location={location}
       />
-
-      <ChatModal isOpen={openChat} onClose={() => setOpenChat(false)} sensorName={name} />
     </>
   );
 };
