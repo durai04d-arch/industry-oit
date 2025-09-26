@@ -51,8 +51,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       // Simple ID-based authentication for testing
       const testUsers: { [key: string]: { name: string; industry?: string } } = {
-        '1234567890': { name: 'John Doe', industry: 'Agriculture' },
-        '0987654321': { name: 'Jane Smith', industry: 'Mechanical' },
+        '1234567890': { name: 'Durai', industry: 'Agriculture' },
+        '0987654321': { name: 'Vishal', industry: 'Mechanical' },
         '1122334455': { name: 'Admin User', industry: 'Electronics' },
         '1111111111': { name: 'Test User 1', industry: 'Agriculture' },
         '2222222222': { name: 'Test User 2', industry: 'Mechanical' },
