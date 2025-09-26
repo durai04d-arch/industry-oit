@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
-import { jsPDF } from "jspdf";aa
+import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
 // --- Inlined AlertModal Component ---
