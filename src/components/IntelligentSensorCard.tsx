@@ -41,7 +41,7 @@ const processSensorData = (config: SensorConfig, reading: SensorReading | null):
   }
 
   const value = reading.value;
-  
+
   switch (config.type) {
     case 'temperature':
       if (value < 0) {
@@ -262,7 +262,6 @@ export const IntelligentSensorCard: React.FC<IntelligentSensorCardProps> = ({
   }
 
   return (
-    // removed hover auto-behavior; card is clickable for other actions if desired
     <Card
       className={`bg-card border-border transition-all duration-300 ${
         processedData.status === 'critical' ? 'ring-2 ring-destructive' : ''
