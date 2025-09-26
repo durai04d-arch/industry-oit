@@ -211,10 +211,20 @@ export const IntelligentSensorCard: React.FC<IntelligentSensorCardProps> = ({
   isLoading,
 }) => {
   const [aiInsight, setAiInsight] = useState<string | null>(null);
+  const [popupOpen, setPopupOpen] = useState(false);
+
+  // compute processedData before effects or usage
+  const processedData = processSensorData(config, reading);
+  const statusVariant = getStatusVariant(processedData.status);
 
   useEffect(() => {
+    // only fetch AI insight when user explicitly opens the popup
     const fetchAiInsight = async () => {
-      if (reading && (processedData.status === 'critical' || processedData.status === 'warning')) {
+      if (
+        popupOpen &&
+        reading &&
+        (processedData.status === 'critical' || processedData.status === 'warning')
+      ) {
         setAiInsight('Analyzing...');
         const insight = await generateEnhancedMessage(
           config.type,
@@ -223,13 +233,12 @@ export const IntelligentSensorCard: React.FC<IntelligentSensorCardProps> = ({
           reading.location
         );
         setAiInsight(insight);
-      } else {
-        setAiInsight(null);
       }
     };
 
     fetchAiInsight();
-  }, [reading, config.type]);
+    // only re-run when popupOpen, reading, or status changes
+  }, [popupOpen, reading, config.type, processedData.status]);
 
   if (isLoading) {
     return (
@@ -252,13 +261,13 @@ export const IntelligentSensorCard: React.FC<IntelligentSensorCardProps> = ({
     );
   }
 
-  const processedData = processSensorData(config, reading);
-  const statusVariant = getStatusVariant(processedData.status);
-
   return (
-    <Card className={`bg-card border-border transition-all duration-300 hover:shadow-tech ${
-      processedData.status === 'critical' ? 'ring-2 ring-destructive' : ''
-    }`}>
+    // removed hover auto-behavior; card is clickable for other actions if desired
+    <Card
+      className={`bg-card border-border transition-all duration-300 ${
+        processedData.status === 'critical' ? 'ring-2 ring-destructive' : ''
+      }`}
+    >
       <CardHeader className="pb-2">
         <CardTitle className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
           {getIconComponent(config.type)}
@@ -276,7 +285,7 @@ export const IntelligentSensorCard: React.FC<IntelligentSensorCardProps> = ({
                 {reading.unit}
               </div>
             </div>
-            
+
             <Badge
               variant={statusVariant}
               className={`w-full justify-center transition-all duration-300 ${
@@ -293,7 +302,24 @@ export const IntelligentSensorCard: React.FC<IntelligentSensorCardProps> = ({
               <AlertDescription className="text-xs">
                 <div className="font-medium mb-1">{processedData.message}</div>
                 <div className="text-muted-foreground">{processedData.recommendation}</div>
-                {aiInsight && (
+
+                {/* Manual toggle to show/hide AI insight */}
+                {(processedData.status === 'critical' || processedData.status === 'warning') && (
+                  <div className="mt-2 flex justify-center items-center gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPopupOpen((v) => !v);
+                      }}
+                      className="text-xs underline text-blue-400"
+                    >
+                      {popupOpen ? 'Hide AI Insight' : 'Show AI Insight'}
+                    </button>
+                  </div>
+                )}
+
+                {/* AI insight only shown when user clicks to open (popupOpen) */}
+                {popupOpen && aiInsight && (
                   <div className="text-blue-400 mt-2 font-semibold">
                     <strong>AI Insight:</strong> {aiInsight}
                   </div>
@@ -311,7 +337,7 @@ export const IntelligentSensorCard: React.FC<IntelligentSensorCardProps> = ({
               <div className="text-2xl font-bold text-muted-foreground">--</div>
               <div className="text-sm text-muted-foreground">No Data</div>
             </div>
-            
+
             <Badge variant="outline" className="w-full justify-center">
               OFFLINE
             </Badge>

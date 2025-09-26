@@ -2,9 +2,16 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Get your API key from https://makersuite.google.com/app/apikey
 // It's recommended to use environment variables for your API key
-const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyDPYjLKfXmWWGa2rMekI_UjjPTIj3FlUFQ";
-
-if (!apiKey || apiKey === "YOUR_API_KEY") {
+const apiKey =
+  // webpack / CRA: process.env injected at build time
+  (typeof process !== "undefined" && (process as any)?.env?.REACT_APP_GEMINI_API_KEY) ||
+  // Vite: import.meta.env
+  (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_GEMINI_API_KEY) ||
+  // runtime fallback: set window.__REACT_APP_GEMINI_API_KEY in index.html if needed
+  (typeof window !== "undefined" && (window as any).__REACT_APP_GEMINI_API_KEY) ||
+  // last-resort placeholder (do not ship a real key)
+  "AIzaSyDPYjLKfXmWWGa2rMekI_UjjPTIj3FlUFQ";
+if (!apiKey || apiKey === "AIzaSyDPYjLKfXmWWGa2rMekI_UjjPTIj3FlUFQ") {
   console.warn(
     "Gemini API key is not set. Please provide it in your environment variables (REACT_APP_GEMINI_API_KEY) or directly in the code."
   );
@@ -26,7 +33,7 @@ export const generateEnhancedMessage = async (
   unit: string,
   location: string
 ): Promise<string> => {
-  if (!apiKey || apiKey === "YOUR_API_KEY") {
+  if (!apiKey || apiKey === "AIzaSyDPYjLKfXmWWGa2rMekI_UjjPTIj3FlUFQ") {
     return "AI analysis unavailable. API key not configured.";
   }
 
@@ -49,7 +56,7 @@ export const generateEnhancedMessage = async (
 };
 
 export const generateChatResponse = async (userInput: string, history: string): Promise<string> => {
-  if (!apiKey || apiKey === "YOUR_API_KEY") {
+  if (!apiKey || apiKey === "AIzaSyDPYjLKfXmWWGa2rMekI_UjjPTIj3FlUFQ") {
     return "AI chat unavailable. API key not configured.";
   }
 
