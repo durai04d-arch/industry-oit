@@ -212,6 +212,7 @@ export const IntelligentSensorCard: React.FC<IntelligentSensorCardProps> = ({
 }) => {
   const [aiInsight, setAiInsight] = useState<string | null>(null);
   const [popupOpen, setPopupOpen] = useState(false);
+  const [alertMsg, setAlertMsg] = useState<string | null>(null);
 
   // compute processedData before effects or usage
   const processedData = processSensorData(config, reading);
@@ -239,6 +240,12 @@ export const IntelligentSensorCard: React.FC<IntelligentSensorCardProps> = ({
     fetchAiInsight();
     // only re-run when popupOpen, reading, or status changes
   }, [popupOpen, reading, config.type, processedData.status]);
+
+  // Helper to show alert messages
+  const showAlertMessage = (msg: string) => {
+    setAlertMsg(msg);
+    setTimeout(() => setAlertMsg(null), 2500);
+  };
 
   if (isLoading) {
     return (
@@ -274,6 +281,15 @@ export const IntelligentSensorCard: React.FC<IntelligentSensorCardProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        {alertMsg && (
+          <Alert className="mb-2 border-destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription className="text-xs font-semibold text-destructive">
+              {alertMsg}
+            </AlertDescription>
+          </Alert>
+        )}
+
         {reading ? (
           <>
             <div className="text-center">
@@ -302,13 +318,14 @@ export const IntelligentSensorCard: React.FC<IntelligentSensorCardProps> = ({
                 <div className="font-medium mb-1">{processedData.message}</div>
                 <div className="text-muted-foreground">{processedData.recommendation}</div>
 
-                {/* Manual toggle to show/hide AI insight */}
+                {/* Only open popup by clicking. Removed cursor navigation. */}
                 {(processedData.status === 'critical' || processedData.status === 'warning') && (
                   <div className="mt-2 flex justify-center items-center gap-2">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setPopupOpen((v) => !v);
+                        if (!popupOpen) showAlertMessage('AI Insight loading...');
                       }}
                       className="text-xs underline text-blue-400"
                     >
