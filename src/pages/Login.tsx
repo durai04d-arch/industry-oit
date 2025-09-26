@@ -116,10 +116,10 @@ const Login: React.FC = () => {
               )}
             </Button>
             
-            
 
-            {/* Demo Cards */}
+            {/**/}
             <div className="space-y-3">
+              
               <div className="grid grid-cols-1 gap-2">
                 <Button
                   variant="outline"
@@ -127,8 +127,17 @@ const Login: React.FC = () => {
                   onClick={() => handleQuickLogin('1234567890')}
                   className="justify-between text-xs"
                 >
-                  <span>Vishal</span>
+                  <span>Durai</span>
                   <Badge variant="secondary">1234567890</Badge>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleQuickLogin('0987654321')}
+                  className="justify-between text-xs"
+                >
+                  <span>Vishal</span>
+                  <Badge variant="secondary">0987654321</Badge>
                 </Button>
                 <Button
                   variant="outline"
@@ -136,7 +145,7 @@ const Login: React.FC = () => {
                   onClick={() => handleQuickLogin('1122334455')}
                   className="justify-between text-xs"
                 >
-                  <span>Durai</span>
+                  <span>Admin User</span>
                   <Badge variant="secondary">1122334455</Badge>
                 </Button>
               </div>
