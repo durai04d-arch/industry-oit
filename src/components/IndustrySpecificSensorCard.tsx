@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
-
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 // --- Inlined AlertModal Component ---
 const AlertModal = ({
@@ -171,8 +172,7 @@ const SensorDetailModal = ({
   };
 
   const downloadPDF = () => {
-    if (!window.jsPDF) { console.error("jsPDF not loaded"); return; }
-    const doc = new window.jsPDF();
+    const doc = new jsPDF();
     doc.setFontSize(20);
     doc.text(`${sensorName} Sensor Report`, 20, 30);
     doc.setFontSize(12);
@@ -181,7 +181,7 @@ const SensorDetailModal = ({
     doc.text(`Location: ${location || 'N/A'}`, 20, 70);
     doc.text(`Time Range: ${timeRange}`, 20, 80);
     const tableData = historicalData.map(item => [new Date(item.created_at).toLocaleString(), `${item.value} ${unit}`]);
-    doc.autoTable({ head: [['Timestamp', 'Value']], body: tableData, startY: 100 });
+    autoTable(doc, { head: [['Timestamp', 'Value']], body: tableData, startY: 100 });
     doc.save(`${sensorName}_report.pdf`);
   };
 
