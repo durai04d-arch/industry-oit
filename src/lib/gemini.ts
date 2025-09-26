@@ -4,7 +4,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 // It's recommended to use environment variables for your API key
 const apiKey = process.env.REACT_APP_GEMINI_API_KEY || "AIzaSyDPYjLKfXmWWGa2rMekI_UjjPTIj3FlUFQ";
 
-if (!apiKey || apiKey === "AIzaSyDPYjLKfXmWWGa2rMekI_UjjPTIj3FlUFQ") {
+if (!apiKey || apiKey === "YOUR_API_KEY") {
   console.warn(
     "Gemini API key is not set. Please provide it in your environment variables (REACT_APP_GEMINI_API_KEY) or directly in the code."
   );
@@ -16,13 +16,17 @@ const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
 });
 
+const chatModel = genAI.getGenerativeModel({
+  model: "gemini-pro",
+});
+
 export const generateEnhancedMessage = async (
   sensorType: string,
   value: number,
   unit: string,
   location: string
 ): Promise<string> => {
-  if (!apiKey || apiKey === "AIzaSyDPYjLKfXmWWGa2rMekI_UjjPTIj3FlUFQ") {
+  if (!apiKey || apiKey === "YOUR_API_KEY") {
     return "AI analysis unavailable. API key not configured.";
   }
 
@@ -41,5 +45,32 @@ export const generateEnhancedMessage = async (
   } catch (error) {
     console.error("Error generating content with Gemini:", error);
     return "Could not retrieve AI-powered insight.";
+  }
+};
+
+export const generateChatResponse = async (userInput: string, history: string): Promise<string> => {
+  if (!apiKey || apiKey === "YOUR_API_KEY") {
+    return "AI chat unavailable. API key not configured.";
+  }
+
+  const prompt = `
+    You are a helpful AI assistant for an IoT dashboard.
+    The user is asking for help with their sensor data.
+    Current conversation history:
+    ${history}
+    User's new message: "${userInput}"
+    
+    Based on this, provide a helpful and concise response.
+    If you need more information, ask clarifying questions.
+    You can also suggest actions the user can take.
+  `;
+
+  try {
+    const result = await chatModel.generateContent(prompt);
+    const response = await result.response;
+    return response.text();
+  } catch (error) {
+    console.error("Error generating chat response with Gemini:", error);
+    return "Sorry, I couldn't process that. Please try again.";
   }
 };
