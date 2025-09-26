@@ -116,10 +116,29 @@ const Login: React.FC = () => {
               )}
             </Button>
             
+            <Button 
+              onClick={() => {
+                // Set a demo user for testing
+                const demoUser = {
+                  id: 'demo-user-id',
+                  card_uid: 'DEMO_CARD_123',
+                  user_name: 'Demo User',
+                  industry: 'Electronics'
+                };
+                localStorage.setItem('rfid_user', JSON.stringify(demoUser));
+                navigate('/loading');
+              }} 
+              variant="outline"
+              className="w-full mt-2"
+            >
+              Skip Verification (Testing)
+            </Button>
 
-            {/**/}
+            {/* Demo Cards */}
             <div className="space-y-3">
-              
+              <div className="text-sm font-medium text-muted-foreground text-center">
+                Demo Cards (Click to use)
+              </div>
               <div className="grid grid-cols-1 gap-2">
                 <Button
                   variant="outline"
@@ -127,7 +146,7 @@ const Login: React.FC = () => {
                   onClick={() => handleQuickLogin('1234567890')}
                   className="justify-between text-xs"
                 >
-                  <span>Durai</span>
+                  <span>John Doe</span>
                   <Badge variant="secondary">1234567890</Badge>
                 </Button>
                 <Button
@@ -136,7 +155,7 @@ const Login: React.FC = () => {
                   onClick={() => handleQuickLogin('0987654321')}
                   className="justify-between text-xs"
                 >
-                  <span>Vishal</span>
+                  <span>Jane Smith</span>
                   <Badge variant="secondary">0987654321</Badge>
                 </Button>
                 <Button

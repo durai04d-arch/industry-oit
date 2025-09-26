@@ -54,8 +54,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         '1234567890': { name: 'John Doe', industry: 'Agriculture' },
         '0987654321': { name: 'Jane Smith', industry: 'Mechanical' },
         '1122334455': { name: 'Admin User', industry: 'Electronics' },
-        '34DB3B6': { name: 'Vishal', industry: 'Agriculture' },
-        'D6FCF85': { name: 'Durai', industry: 'Mechanical' }
+        '1111111111': { name: 'Test User 1', industry: 'Agriculture' },
+        '2222222222': { name: 'Test User 2', industry: 'Mechanical' },
+        '3333333333': { name: 'Test User 3', industry: 'Electronics' }
       };
 
       const testUser = testUsers[cardUid];
