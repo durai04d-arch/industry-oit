@@ -124,20 +124,20 @@ const Login: React.FC = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleQuickLogin('34DB3B6')}
+                  onClick={() => handleQuickLogin('1234567890')}
                   className="justify-between text-xs"
                 >
                   <span>Vishal</span>
-                  <Badge variant="secondary">34DB3B6</Badge>
+                  <Badge variant="secondary">1234567890</Badge>
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleQuickLogin('D6FCF85')}
+                  onClick={() => handleQuickLogin('1122334455')}
                   className="justify-between text-xs"
                 >
                   <span>Durai</span>
-                  <Badge variant="secondary">D6FCF85</Badge>
+                  <Badge variant="secondary">1122334455</Badge>
                 </Button>
               </div>
             </div>
