@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, Thermometer, Wind, Droplets, Radio } from 'lucide-react';
-import { generateEnhancedMessage } from '@/lib/gemini';
 
 interface SensorReading {
   id: string;
@@ -210,27 +209,6 @@ export const IntelligentSensorCard: React.FC<IntelligentSensorCardProps> = ({
   reading,
   isLoading,
 }) => {
-  const [aiInsight, setAiInsight] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchAiInsight = async () => {
-      if (reading && (processedData.status === 'critical' || processedData.status === 'warning')) {
-        setAiInsight('Analyzing...');
-        const insight = await generateEnhancedMessage(
-          config.type,
-          reading.value,
-          reading.unit,
-          reading.location
-        );
-        setAiInsight(insight);
-      } else {
-        setAiInsight(null);
-      }
-    };
-
-    fetchAiInsight();
-  }, [reading, config.type]);
-
   if (isLoading) {
     return (
       <Card className="bg-card border-border">
@@ -293,11 +271,6 @@ export const IntelligentSensorCard: React.FC<IntelligentSensorCardProps> = ({
               <AlertDescription className="text-xs">
                 <div className="font-medium mb-1">{processedData.message}</div>
                 <div className="text-muted-foreground">{processedData.recommendation}</div>
-                {aiInsight && (
-                  <div className="text-blue-400 mt-2 font-semibold">
-                    <strong>AI Insight:</strong> {aiInsight}
-                  </div>
-                )}
               </AlertDescription>
             </Alert>
 
@@ -331,3 +304,6 @@ export const IntelligentSensorCard: React.FC<IntelligentSensorCardProps> = ({
 };
 
 export default IntelligentSensorCard;
+
+
+
