@@ -34,7 +34,7 @@ const AlertModal = ({
     setSending(true);
     setSendResult(null);
     try {
-      const res = await fetch('/api/send-alert', {
+      const res = await fetch('/send-alert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -198,7 +198,7 @@ function ensureGlobalChatRoot() {
       if (!input.trim()) return;
       addMessage({ role: 'user', text: input.trim() });
       try {
-        const res = await fetch('/api/chat', {
+        const res = await fetch('/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ sensorName: state.sensorName, message: input.trim() }),
