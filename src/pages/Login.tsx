@@ -288,7 +288,7 @@ const Login: React.FC = () => {
 
                   size="sm"
 
-                  onClick={() => handleQuickLogin('D6FCF805')}
+                  onClick={() => handleQuickLogin('1234567890')}
 
                   className="justify-between text-xs"
 
@@ -296,7 +296,7 @@ const Login: React.FC = () => {
 
                   <span>Durai</span>
 
-                  <Badge variant="secondary">D6FCF805</Badge>
+                  <Badge variant="secondary">1234567890</Badge>
 
                 </Button>
 
@@ -306,7 +306,7 @@ const Login: React.FC = () => {
 
                   size="sm"
 
-                  onClick={() => handleQuickLogin('34DB3B6')}
+                  onClick={() => handleQuickLogin('0987654321')}
 
                   className="justify-between text-xs"
 
@@ -314,7 +314,7 @@ const Login: React.FC = () => {
 
                   <span>Vishal</span>
 
-                  <Badge variant="secondary">34DB3B6</Badge>
+                  <Badge variant="secondary">0987654321</Badge>
 
                 </Button>
 
@@ -324,7 +324,7 @@ const Login: React.FC = () => {
 
                   size="sm"
 
-                  onClick={() => handleQuickLogin('D6FCF805')}
+                  onClick={() => handleQuickLogin('1122334455')}
 
                   className="justify-between text-xs"
 
@@ -332,7 +332,7 @@ const Login: React.FC = () => {
 
                   <span>Admin User</span>
 
-                  <Badge variant="secondary">D6FCF805</Badge>
+                  <Badge variant="secondary">1122334455</Badge>
 
                 </Button>
 
