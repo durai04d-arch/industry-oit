@@ -21,6 +21,44 @@ const AlertModal = ({
   sensorValue,
   unit,
 }) => {
+  const [recipientEmail, setRecipientEmail] = useState('');
+  const [sending, setSending] = useState(false);
+  const [sendResult, setSendResult] = useState<string | null>(null);
+
+  const sendAlertToEmail = async () => {
+    if (!recipientEmail) {
+      setSendResult('Please enter an email.');
+      return;
+    }
+    setSending(true);
+    setSendResult(null);
+    try {
+      const res = await fetch('/api/send-alert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: recipientEmail,
+          sensorName,
+          message,
+          value: sensorValue,
+          unit,
+          alertLevel,
+        }),
+      });
+      const json = await res.json();
+      if (res.ok) {
+        setSendResult('Alert sent successfully.');
+      } else {
+        setSendResult(json?.error || 'Failed to send alert.');
+      }
+    } catch (err) {
+      setSendResult('Failed to send alert.');
+      console.error(err);
+    } finally {
+      setSending(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   const handleBackToDashboard = () => {
@@ -90,6 +128,22 @@ const AlertModal = ({
           <p className="text-foreground/90 leading-relaxed animate-fade-in">
             {message}
           </p>
+          <div className="space-y-2">
+            <label className="text-sm text-muted-foreground block text-left">Send alert to email</label>
+            <div className="flex gap-2">
+              <input
+                type="email"
+                value={recipientEmail}
+                onChange={(e) => setRecipientEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="w-full rounded-md border px-3 py-2 bg-input text-foreground"
+              />
+              <Button disabled={sending} onClick={sendAlertToEmail}>
+                {sending ? 'Sending...' : 'Send'}
+              </Button>
+            </div>
+            {sendResult && <div className="text-xs text-muted-foreground mt-1">{sendResult}</div>}
+          </div>
           <div className="flex gap-3">
             <Button
               onClick={handleBackToDashboard}
@@ -107,6 +161,60 @@ const AlertModal = ({
               Acknowledge Alert
             </Button>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- ChatModal (new small chat widget) ---
+const ChatModal = ({ isOpen, onClose, sensorName }) => {
+  const [messages, setMessages] = useState([{ role: 'system', text: `You are a support assistant for sensor ${sensorName}.` }]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+    const userMsg = { role: 'user', text: input.trim() };
+    setMessages((m) => [...m, userMsg]);
+    setInput('');
+    setLoading(true);
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sensorName, message: input.trim() }),
+      });
+      const json = await res.json();
+      const reply = json?.reply || 'Sorry, no response.';
+      setMessages((m) => [...m, { role: 'assistant', text: reply }]);
+    } catch (err) {
+      setMessages((m) => [...m, { role: 'assistant', text: 'Error contacting chat service.' }]);
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-60 flex items-end justify-center p-4">
+      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <div className="relative w-full max-w-md bg-card rounded-lg border p-4 z-70">
+        <div className="flex justify-between items-center mb-2">
+          <div className="font-semibold">Sensor Assistant - {sensorName}</div>
+          <Button variant="ghost" size="icon" onClick={onClose}><X className="w-4 h-4" /></Button>
+        </div>
+        <div className="h-64 overflow-auto mb-2 p-2 bg-background rounded">
+          {messages.filter(m => m.role !== 'system').map((m, i) => (
+            <div key={i} className={`mb-2 ${m.role === 'user' ? 'text-right' : 'text-left'}`}>
+              <div className={`inline-block px-3 py-1 rounded ${m.role === 'user' ? 'bg-primary/10' : 'bg-green-50'}`}>{m.text}</div>
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <input className="flex-1 rounded border px-2 py-1" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') sendMessage(); }} />
+          <Button onClick={sendMessage} disabled={loading}>{loading ? '...' : 'Send'}</Button>
         </div>
       </div>
     </div>
@@ -392,6 +500,7 @@ const IndustrySpecificSensorCard: React.FC<IndustrySpecificSensorCardProps> = ({
 }) => {
   const [showAlert, setShowAlert] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [openChat, setOpenChat] = useState(false);
   const insights = getIntelligentInsights(name, value, unit, industry);
   const statusVariant = getStatusVariant(insights.status);
 
@@ -425,6 +534,9 @@ const IndustrySpecificSensorCard: React.FC<IndustrySpecificSensorCardProps> = ({
             </div>
             {name}
           </CardTitle>
+          <div className="ml-auto">
+            <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setOpenChat(true); }}>Chat</Button>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-center animate-scale-in">
@@ -494,6 +606,8 @@ const IndustrySpecificSensorCard: React.FC<IndustrySpecificSensorCardProps> = ({
         unit={unit}
         location={location}
       />
+
+      <ChatModal isOpen={openChat} onClose={() => setOpenChat(false)} sensorName={name} />
     </>
   );
 };
