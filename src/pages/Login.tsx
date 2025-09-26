@@ -116,56 +116,28 @@ const Login: React.FC = () => {
               )}
             </Button>
             
-            <Button 
-              onClick={() => {
-                // Set a demo user for testing
-                const demoUser = {
-                  id: 'demo-user-id',
-                  card_uid: 'DEMO_CARD_123',
-                  user_name: 'Demo User',
-                  industry: 'Electronics'
-                };
-                localStorage.setItem('rfid_user', JSON.stringify(demoUser));
-                navigate('/loading');
-              }} 
-              variant="outline"
-              className="w-full mt-2"
-            >
-              Skip Verification (Testing)
-            </Button>
+            
 
             {/* Demo Cards */}
             <div className="space-y-3">
-              <div className="text-sm font-medium text-muted-foreground text-center">
-                Demo Cards (Click to use)
-              </div>
               <div className="grid grid-cols-1 gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleQuickLogin('1234567890')}
+                  onClick={() => handleQuickLogin('34DB3B6')}
                   className="justify-between text-xs"
                 >
-                  <span>John Doe</span>
-                  <Badge variant="secondary">1234567890</Badge>
+                  <span>Vishal</span>
+                  <Badge variant="secondary">34DB3B6</Badge>
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleQuickLogin('0987654321')}
+                  onClick={() => handleQuickLogin('D6FCF85')}
                   className="justify-between text-xs"
                 >
-                  <span>Jane Smith</span>
-                  <Badge variant="secondary">0987654321</Badge>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleQuickLogin('1122334455')}
-                  className="justify-between text-xs"
-                >
-                  <span>Admin User</span>
-                  <Badge variant="secondary">1122334455</Badge>
+                  <span>Durai</span>
+                  <Badge variant="secondary">D6FCF85</Badge>
                 </Button>
               </div>
             </div>
