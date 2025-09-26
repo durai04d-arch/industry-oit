@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -22,13 +23,15 @@ const AlertModal = ({
   sensorValue,
   unit,
 }) => {
-  const [recipientEmail, setRecipientEmail] = useState('');
+  // Use AuthContext to get the logged-in user's email
+  const { user } = useAuth();
+  const recipientEmail = user?.email || '';
   const [sending, setSending] = useState(false);
   const [sendResult, setSendResult] = useState<string | null>(null);
 
   const sendAlertToEmail = async () => {
     if (!recipientEmail) {
-      setSendResult('Please enter an email.');
+      setSendResult('No user email found.');
       return;
     }
     setSending(true);
@@ -130,16 +133,10 @@ const AlertModal = ({
             {message}
           </p>
           <div className="space-y-2">
-            <label className="text-sm text-muted-foreground block text-left">Send alert to email</label>
-            <div className="flex gap-2">
-              <input
-                type="email"
-                value={recipientEmail}
-                onChange={(e) => setRecipientEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="w-full rounded-md border px-3 py-2 bg-input text-foreground"
-              />
-              <Button disabled={sending} onClick={sendAlertToEmail}>
+            <label className="text-sm text-muted-foreground block text-left">Alert will be sent to:</label>
+            <div className="flex gap-2 items-center">
+              <span className="w-full rounded-md border px-3 py-2 bg-input text-foreground">{recipientEmail || 'No email found'}</span>
+              <Button disabled={sending || !recipientEmail} onClick={sendAlertToEmail}>
                 {sending ? 'Sending...' : 'Send'}
               </Button>
             </div>
