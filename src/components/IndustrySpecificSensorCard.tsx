@@ -11,7 +11,6 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { createRoot, Root } from 'react-dom/client';
-import { supabase } from '@/integrations/supabase/client';
 
 // --- Inlined AlertModal Component ---
 const AlertModal = ({
@@ -315,6 +314,19 @@ const SensorDetailModal = ({
 
   const fetchHistoricalData = async () => {
     setIsLoading(true);
+    const generateMockData = (startTime, points, sensorUnit) => {
+        const data = [];
+        const timeStep = (new Date().getTime() - startTime.getTime()) / points;
+        for (let i = 0; i < points; i++) {
+            const timestamp = new Date(startTime.getTime() + i * timeStep).toISOString();
+            let value;
+            if (sensorUnit === '°C') { value = 20 + Math.random() * 5 + Math.sin(i / (points / (2 * Math.PI))) * 3; }
+            else if (sensorUnit === '%') { value = 55 + Math.random() * 10 - 5; }
+            else { value = Math.random() * 100; }
+            data.push({ created_at: timestamp, value: parseFloat(value.toFixed(1)), id: `mock-${i}` });
+        }
+        return data;
+    };
     try {
       let startDate = new Date();
       switch (timeRange) {
@@ -324,26 +336,11 @@ const SensorDetailModal = ({
         case '7d': startDate = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000); break;
         case '30d': startDate = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000); break;
       }
-
-      // Fetch real historical data from Supabase
-      const { data, error } = await supabase
-        .from('sensor_readings')
-        .select('created_at, value, id')
-        .eq('sensor_type', sensorType)
-        .gte('created_at', startDate.toISOString())
-        .order('created_at', { ascending: true });
-
-      if (error) {
-        console.error('Error fetching historical data:', error);
-        setHistoricalData([]);
-      } else {
-        setHistoricalData(data || []);
-      }
+      setHistoricalData(generateMockData(startDate, 100, unit));
     } catch (error) {
       console.error('Error fetching data:', error);
-      setHistoricalData([]);
     } finally {
-      setIsLoading(false);
+      setTimeout(() => setIsLoading(false), 500);
     }
   };
 
