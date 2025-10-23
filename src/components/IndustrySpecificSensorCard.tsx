@@ -324,7 +324,8 @@ const SensorDetailModal = ({
         case '7d': startDate = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000); break;
         case '30d': startDate = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000); break;
       }
-      
+
+      // Fetch real historical data from Supabase
       const { data, error } = await supabase
         .from('sensor_readings')
         .select('created_at, value, id')
