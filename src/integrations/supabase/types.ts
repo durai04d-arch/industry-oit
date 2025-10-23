@@ -44,26 +44,32 @@ export type Database = {
       sensor_data: {
         Row: {
           card_uid: string | null
+          created_at: string | null
           distance_cm: number | null
           gas_level: number | null
-          humidity: number
-          temperature: number
+          humidity: number | null
+          id: number
+          temperature: number | null
           Time: string | null
         }
         Insert: {
           card_uid?: string | null
+          created_at?: string | null
           distance_cm?: number | null
           gas_level?: number | null
-          humidity: number
-          temperature: number
+          humidity?: number | null
+          id?: number
+          temperature?: number | null
           Time?: string | null
         }
         Update: {
           card_uid?: string | null
+          created_at?: string | null
           distance_cm?: number | null
           gas_level?: number | null
-          humidity?: number
-          temperature?: number
+          humidity?: number | null
+          id?: number
+          temperature?: number | null
           Time?: string | null
         }
         Relationships: []
@@ -98,6 +104,21 @@ export type Database = {
           unit?: string
           updated_at?: string
           value?: number
+        }
+        Relationships: []
+      }
+      Senss: {
+        Row: {
+          created_at: string
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
         }
         Relationships: []
       }
