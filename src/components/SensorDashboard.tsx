@@ -36,22 +36,25 @@ export const SensorDashboard: React.FC = () => {
   useEffect(() => {
     const fetchLatestReadings = async () => {
       try {
-        // Fetch the latest reading for each sensor type
+        // Fetch historical data for the last 24 hours and use the last value as current reading
         const promises = sensorConfigs.map(async (config) => {
+          const startDate = new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toISOString();
+          
           const { data, error } = await supabase
             .from('sensor_readings')
             .select('*')
             .eq('sensor_type', config.type)
+            .gte('created_at', startDate)
             .order('created_at', { ascending: false })
-            .limit(1)
-            .maybeSingle();
+            .limit(1);
 
           if (error && error.code !== 'PGRST116') {
             console.error(`Error fetching ${config.type} data:`, error);
             return null;
           }
 
-          return data ? { type: config.type, data } : null;
+          // Return the most recent value from historical data
+          return data && data.length > 0 ? { type: config.type, data: data[0] } : null;
         });
 
         const results = await Promise.all(promises);
